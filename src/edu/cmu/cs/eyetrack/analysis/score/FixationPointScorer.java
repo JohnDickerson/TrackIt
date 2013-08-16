@@ -92,7 +92,7 @@ public class FixationPointScorer extends Scorer {
 			}
 			score /= (double) fixationIdxScores.size();
 
-			System.err.println("Score: " + score);
+			System.err.println("Score: " + score + ", Fixation Pts: " + fixationIdxScores.size());
 
 			SingleRunScore record = new SingleRunScore();
 			record.setFrameCountOnTarget(validFrameCount);

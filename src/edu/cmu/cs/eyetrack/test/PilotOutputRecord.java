@@ -143,6 +143,8 @@ public class PilotOutputRecord {
 			// TODO: map trial IDs to proper header's column; only an issue if we're missing data
 			
 			SortedMap<String, SortedMap<Integer, SingleRunScore>> trialMap = dataMap.get(trialType);
+			int[] runningAvgCount = new int[numCSVColumns];
+			double[] runningAvgVal = new double[numCSVColumns];
 			for(String subjectID : trialMap.keySet()) {
 				
 				SortedMap<Integer, SingleRunScore> records = trialMap.get(subjectID);
@@ -158,7 +160,13 @@ public class PilotOutputRecord {
 				idx=0;
 				dataRow[idx++] = subjectID;
 				for(Integer trialID : records.keySet()) {
-					dataRow[idx++] = String.valueOf( records.get(trialID).getScore() );
+					Double score = records.get(trialID).getScore();
+					dataRow[idx] = String.valueOf( score );
+					if(score != null && !Double.isNaN(score) && !Double.isInfinite(score)) {
+						runningAvgCount[idx] += 1;
+						runningAvgVal[idx] += score;
+					}
+					idx++;
 				}
 				// And also the time-on-task for this subject across all trials
 				dataRow[idx++] = "";
@@ -171,6 +179,16 @@ public class PilotOutputRecord {
 				writer.writeNext(dataRow);
 				
 			}
+			
+			String[] dataRow = new String[numCSVColumns];
+			dataRow[0] = "AVERAGE";
+			for(idx=1; idx<numCSVColumns; idx++) {
+				if(runningAvgCount[idx] != 0) {
+					runningAvgVal[idx] = runningAvgVal[idx] / (double) runningAvgCount[idx];
+				}
+				dataRow[idx] = String.valueOf(runningAvgVal[idx]);
+			}
+			writer.writeNext(dataRow);
 			
 			writer.flush();
 			writer.writeNext(new String[] {""});

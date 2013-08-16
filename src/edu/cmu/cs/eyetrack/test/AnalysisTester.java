@@ -58,7 +58,7 @@ public class AnalysisTester {
 
 		// Lets the user loop through different time offsets
 		Vector<Long> timeOffsets = new Vector<Long>();
-		for(Long offset=0L; offset<=500; offset+=10) {
+		for(Long offset=0L; offset<=500; offset+=100) {
 			timeOffsets.add(offset);
 		}
 
