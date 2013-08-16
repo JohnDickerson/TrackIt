@@ -10,8 +10,11 @@ public class TobiiFrame extends Frame {
 	private int validityLeft;
 	private Coordinate<Double> gazeRightPt;
 	private int validityRight;
-	private Coordinate<Double> fixationPt;
 	private Coordinate<Double> gazePt;
+	
+	private Integer fixationIdx;
+	private Coordinate<Double> fixationPt;
+	private Integer fixationDuration;
 	
 	public TobiiFrame() {
 		
@@ -77,6 +80,22 @@ public class TobiiFrame extends Frame {
 
 	public void setGazePt(Coordinate<Double> gazePt) {
 		this.gazePt = gazePt;
+	}
+
+	public Integer getFixationIndex() {
+		return fixationIdx;
+	}
+
+	public void setFixationIndex(Integer fixationIdx) {
+		this.fixationIdx = fixationIdx;
+	}
+
+	public Integer getFixationDuration() {
+		return fixationDuration;
+	}
+
+	public void setFixationDuration(Integer fixationDuration) {
+		this.fixationDuration = fixationDuration;
 	}
 
 	@Override

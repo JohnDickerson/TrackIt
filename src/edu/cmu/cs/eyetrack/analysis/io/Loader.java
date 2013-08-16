@@ -10,21 +10,23 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import au.com.bytecode.opencsv.CSVReader;
 import edu.cmu.cs.eyetrack.analysis.struct.Trajectory;
-import edu.cmu.cs.eyetrack.analysis.struct.tobii.TobiiEventMap;
-import edu.cmu.cs.eyetrack.analysis.struct.tobii.TobiiFrame;
 import edu.cmu.cs.eyetrack.analysis.struct.tobii.TobiiData;
-import edu.cmu.cs.eyetrack.analysis.struct.tobii.TobiiHeader;
+import edu.cmu.cs.eyetrack.analysis.struct.tobii.TobiiEventMap;
 import edu.cmu.cs.eyetrack.analysis.struct.tobii.TobiiEventMap.TobiiEventType;
+import edu.cmu.cs.eyetrack.analysis.struct.tobii.TobiiFrame;
+import edu.cmu.cs.eyetrack.analysis.struct.tobii.TobiiHeader;
 import edu.cmu.cs.eyetrack.analysis.struct.trackit.Experiment;
+import edu.cmu.cs.eyetrack.analysis.struct.trackit.Experiment.TrialType;
 import edu.cmu.cs.eyetrack.analysis.struct.trackit.TrackItFrame;
 import edu.cmu.cs.eyetrack.analysis.struct.trackit.Trial;
-import edu.cmu.cs.eyetrack.analysis.struct.trackit.Experiment.TrialType;
 import edu.cmu.cs.eyetrack.helper.Coordinate;
 
 public class Loader {
@@ -327,14 +329,18 @@ public class Loader {
 				long timestamp = Long.valueOf(line[0]) - startTime;
 				
 				TobiiFrame f = new TobiiFrame();
+				
 				f.setGazeLeftPt(new Coordinate<Double>( Double.valueOf(line[4]), Double.valueOf(line[5])));
 				f.setValidityLeft(Integer.valueOf(line[10]));
 				f.setGazeRightPt(new Coordinate<Double>( Double.valueOf(line[11]), Double.valueOf(line[12])));
 				f.setValidityRight(Integer.valueOf(line[17]));
-				f.setFixationPt(new Coordinate<Double>( Double.valueOf(line[19]), Double.valueOf(line[20])));
 				f.setGazePt(new Coordinate<Double>( Double.valueOf(line[38]), Double.valueOf(line[39]) ));
-				f.setTimestamp(timestamp);	
 				
+				f.setFixationIndex(Integer.valueOf(line[18]));
+				f.setFixationPt(new Coordinate<Double>( Double.valueOf(line[32]), Double.valueOf(line[33])));
+				f.setFixationDuration(Integer.valueOf(line[34]));
+				
+				f.setTimestamp(timestamp);	
 				trajectory.registerFrame(f);
 			}
 			
@@ -417,6 +423,7 @@ public class Loader {
 			// it'll show the grid selection or memory check.  We handle this by comparing against the gold standard only
 			Trajectory<TobiiFrame> trajectory = new Trajectory<TobiiFrame>(startTime);
 			trajectory.setLengthMS(stopTime - startTime);
+			Map<Integer, Coordinate<Double>> fixationPts = new HashMap<Integer, Coordinate<Double>>();
 			while( (line = reader.readNext()) != null && ( Long.valueOf(line[0]) < stopTime-recStartTime) ) {
 				
 				// Skip any events that weren't eye tracking
@@ -427,18 +434,25 @@ public class Loader {
 				// Translate relative timestamp into absolute wall-clock timestamp
 				long timestamp = Long.valueOf(line[0]) + recStartTime;
 				
-				TobiiFrame f = new TobiiFrame();
+				TobiiFrame f = new TobiiFrame();		
 				f.setGazeLeftPt(new Coordinate<Double>( Double.valueOf(line[4]), Double.valueOf(line[5])));
 				f.setValidityLeft(Integer.valueOf(line[10]));
 				f.setGazeRightPt(new Coordinate<Double>( Double.valueOf(line[11]), Double.valueOf(line[12])));
 				f.setValidityRight(Integer.valueOf(line[17]));
-				f.setFixationPt(new Coordinate<Double>( Double.valueOf(line[19]), Double.valueOf(line[20])));
 				f.setGazePt(new Coordinate<Double>( Double.valueOf(line[38]), Double.valueOf(line[39]) ));
+				
+				// Only some gaze points are part of a fixation point
+				if(!line[18].trim().isEmpty()) {
+					f.setFixationIndex(Integer.valueOf(line[18]));
+					f.setFixationPt(new Coordinate<Double>( Double.valueOf(line[32]), Double.valueOf(line[33])));
+					f.setFixationDuration(Integer.valueOf(line[34]));
+					fixationPts.put(f.getFixationIndex(), f.getFixationPt());
+				}
+				
 				f.setTimestamp(timestamp);	
 				
 				trajectory.registerFrame(f);
 			}
-			
 			data.registerTrajectory(trialId, trajectory);
 		}
 		

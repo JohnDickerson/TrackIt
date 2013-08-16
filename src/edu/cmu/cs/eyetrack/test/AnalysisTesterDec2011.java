@@ -9,6 +9,7 @@ import java.util.Map;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import edu.cmu.cs.eyetrack.analysis.io.Loader;
+import edu.cmu.cs.eyetrack.analysis.score.PointByPointScorer;
 import edu.cmu.cs.eyetrack.analysis.score.Scorer;
 import edu.cmu.cs.eyetrack.analysis.score.compare.DeltaOffsetPointComparator;
 import edu.cmu.cs.eyetrack.analysis.score.compare.PointComparator;
@@ -171,7 +172,7 @@ public class AnalysisTesterDec2011 {
 				double exponent = 2.0;
 				DistanceFunction dist = new EuclideanDistanceFunction();
 				//DistanceFunction dist = new FalloffDistanceFunction(exponent);
-				Scorer scorer = new Scorer(f, dist);
+				Scorer scorer = new PointByPointScorer(f, dist);
 
 				// Record ALL score data in separate files, if desired
 				boolean recordEverything = false;

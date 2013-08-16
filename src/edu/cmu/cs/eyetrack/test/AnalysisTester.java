@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Vector;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import edu.cmu.cs.eyetrack.analysis.io.Loader;
+import edu.cmu.cs.eyetrack.analysis.score.FixationPointScorer;
 import edu.cmu.cs.eyetrack.analysis.score.Scorer;
 import edu.cmu.cs.eyetrack.analysis.score.compare.DeltaOffsetPointComparator;
 import edu.cmu.cs.eyetrack.analysis.score.compare.PointComparator;
@@ -206,9 +206,9 @@ public class AnalysisTester {
 					PointComparator f = new DeltaOffsetPointComparator(offset);
 
 					double exponent = 2.0;
-					//DistanceFunction dist = new EuclideanDistanceFunction();
-					DistanceFunction dist = new FalloffDistanceFunction(exponent);
-					Scorer scorer = new Scorer(f, dist);
+					DistanceFunction dist = new EuclideanDistanceFunction();
+					//DistanceFunction dist = new FalloffDistanceFunction(exponent);
+					Scorer scorer = new FixationPointScorer(f, dist);
 
 					// Record ALL score data in separate files, if desired
 					boolean recordEverything = false;
@@ -244,13 +244,14 @@ public class AnalysisTester {
 
 
 					// Record the subject's score in our map of scores, for charting later
+					recorder.addHeader("scorer", scorer.getClass().getName());
 					recorder.addHeader("offset", offset + " ms");
 					recorder.addHeader("exponent", String.valueOf(exponent));
 					recorder.addHeader("comparator function", f.getClass().getName());
 					recorder.addHeader("distance function", dist.getClass().getName());
 					recorder.addHeader("scorer", scorer.getClass().getName());
 					recorder.addHeader("lookThreshold", String.valueOf(lookThreshold));
-
+					
 					recorder.addScore(trialType, subjectID, scores);
 
 

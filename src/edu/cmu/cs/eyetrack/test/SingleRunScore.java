@@ -2,8 +2,9 @@ package edu.cmu.cs.eyetrack.test;
 
 public class SingleRunScore {
 
-	private long frameCountOverall;
-	private long frameCountOnTarget;
+	private long frameCountOverall = 0;
+	private long frameCountOnTarget = 0;
+	private long fixationPointCount = 0;
 	private double score;
 	
 	public SingleRunScore() {
@@ -34,9 +35,18 @@ public class SingleRunScore {
 		this.score = score;
 	}
 	
+	public long getFixationPointCount() {
+		return fixationPointCount;
+	}
+
+	public void setFixationPointCount(long fixationPointCount) {
+		this.fixationPointCount = fixationPointCount;
+	}
+
 	public SingleRunScore fakeTheScore() {
 		this.frameCountOverall = -1;
 		this.frameCountOnTarget = 0;
+		this.fixationPointCount = -1;
 		this.score = Double.NaN;
 		
 		return this;
