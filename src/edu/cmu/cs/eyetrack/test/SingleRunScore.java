@@ -5,6 +5,7 @@ public class SingleRunScore {
 	private long frameCountOverall = 0;
 	private long frameCountOnTarget = 0;
 	private long fixationPointCount = 0;
+	private long fixationNearDistractorNotTargetCount = 0;
 	private double score;
 	
 	public SingleRunScore() {
@@ -41,6 +42,16 @@ public class SingleRunScore {
 
 	public void setFixationPointCount(long fixationPointCount) {
 		this.fixationPointCount = fixationPointCount;
+	}
+	
+
+	public long getFixationNearDistractorNotTargetCount() {
+		return fixationNearDistractorNotTargetCount;
+	}
+
+	public void setFixationNearDistractorNotTargetCount(
+			long fixationNearDistractorNotTargetCount) {
+		this.fixationNearDistractorNotTargetCount = fixationNearDistractorNotTargetCount;
 	}
 
 	public SingleRunScore fakeTheScore() {

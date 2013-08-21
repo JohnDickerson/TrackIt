@@ -97,6 +97,11 @@ public class TobiiFrame extends Frame {
 	public void setFixationDuration(Integer fixationDuration) {
 		this.fixationDuration = fixationDuration;
 	}
+	
+	
+	public boolean bothEyesTracked() {
+		return !(getValidityLeft() == 4 || getValidityRight() == 4);
+	}
 
 	@Override
 	public String toString() {

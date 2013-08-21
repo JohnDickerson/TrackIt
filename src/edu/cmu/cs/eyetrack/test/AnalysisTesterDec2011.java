@@ -197,6 +197,7 @@ public class AnalysisTesterDec2011 {
 								}
 								writer.writeNext(new String[] {String.valueOf(score)});
 							}
+							writer.close();
 						}
 					} catch(IOException e) {
 						e.printStackTrace();

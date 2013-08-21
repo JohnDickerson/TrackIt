@@ -1,5 +1,14 @@
+# Track-It files #
+*.csv   # output files from Track-It
+*.tsv   # output files from Tobii
+/sample/Anticipatory   # we include the .zip of these
+/sample/Bad
+/sample/Delayed
+/sample/Good
+
+# Java and system stuff #
 *.class
-*.csv
+*~
 
 # Package Files #
 *.jar

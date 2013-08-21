@@ -7,6 +7,7 @@ import edu.cmu.cs.eyetrack.analysis.score.distance.DistanceFunction;
 import edu.cmu.cs.eyetrack.analysis.struct.Trajectory;
 import edu.cmu.cs.eyetrack.analysis.struct.tobii.TobiiFrame;
 import edu.cmu.cs.eyetrack.analysis.struct.trackit.TrackItFrame;
+import edu.cmu.cs.eyetrack.analysis.struct.trackit.Trial;
 import edu.cmu.cs.eyetrack.helper.Util;
 import edu.cmu.cs.eyetrack.test.SingleRunScore;
 
@@ -87,5 +88,11 @@ public class PointByPointScorer extends Scorer{
 		record.setScore(score);
 
 		return record;
+	}
+
+	@Override
+	public boolean calcFixationStats(SingleRunScore record, Trial actual, Trajectory<TobiiFrame> subject) {
+		// TODO implement this?  Is it okay to just return nothing here? Probably
+		throw new UnsupportedOperationException();
 	}
 }

@@ -16,7 +16,6 @@ import edu.cmu.cs.eyetrack.analysis.score.compare.DeltaOffsetPointComparator;
 import edu.cmu.cs.eyetrack.analysis.score.compare.PointComparator;
 import edu.cmu.cs.eyetrack.analysis.score.distance.DistanceFunction;
 import edu.cmu.cs.eyetrack.analysis.score.distance.EuclideanDistanceFunction;
-import edu.cmu.cs.eyetrack.analysis.score.distance.FalloffDistanceFunction;
 import edu.cmu.cs.eyetrack.analysis.struct.tobii.TobiiData;
 import edu.cmu.cs.eyetrack.analysis.struct.tobii.TobiiEventMap;
 import edu.cmu.cs.eyetrack.analysis.struct.trackit.Experiment;
@@ -36,12 +35,11 @@ public class AnalysisTester {
 			subjRootDir = "C:\\sideprojects\\TrackIt\\experiments\\feb2012\\";
 			Util.dPrintln("Detected Windows-based operating system");
 		} else if(isMacOsX) {
-			//subjRootDir = "/Users/spook/sideprojects/TrackIt/experiments/";
-			subjRootDir = "/Users/spook/Dropbox/organized_DirectTrackIt Files";
+			subjRootDir = "/Users/spook/code/TrackIt/sample/sample_data_August_2013";
 			Util.dPrintln("Detected Mac OS X as operating system");
 		} else {
 			//subjRootDir = "/home/spook/sideprojects/TrackIt/experiments/feb2012/";
-			subjRootDir = "/usr0/home/jpdicker/Dropbox/organized_DirectTrackIt Files";
+			subjRootDir = "/usr0/home/jpdicker/code/TrackIt/sample/sample_data_August_2013";
 			Util.dPrintln("Detected *nix-based operating system");
 		}
 
@@ -58,7 +56,7 @@ public class AnalysisTester {
 
 		// Lets the user loop through different time offsets
 		Vector<Long> timeOffsets = new Vector<Long>();
-		for(Long offset=0L; offset<=500; offset+=100) {
+		for(Long offset=0L; offset<=0L; offset+=100L) {
 			timeOffsets.add(offset);
 		}
 
@@ -236,6 +234,7 @@ public class AnalysisTester {
 									}
 									writer.writeNext(new String[] {String.valueOf(score)});
 								}
+								writer.close();
 							}
 						} catch(IOException e) {
 							e.printStackTrace();
