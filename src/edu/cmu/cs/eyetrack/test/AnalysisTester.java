@@ -39,8 +39,8 @@ public class AnalysisTester {
 			Util.dPrintln("Detected Mac OS X as operating system");
 		} else {
 			//subjRootDir = "/home/spook/sideprojects/TrackIt/experiments/feb2012/";
-			subjRootDir = "/usr0/home/jpdicker/Dropbox/organized_DirectTrackIt Files";
-			//subjRootDir = "/usr0/home/jpdicker/code/TrackIt/sample/sample_data_August_2013";
+			//subjRootDir = "/usr0/home/jpdicker/Dropbox/organized_DirectTrackIt Files";
+			subjRootDir = "/usr0/home/jpdicker/code/TrackIt/sample/sample_data_August_2013";
 			Util.dPrintln("Detected *nix-based operating system");
 		}
 

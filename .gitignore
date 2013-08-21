@@ -9,6 +9,11 @@
 # Java and system stuff #
 *.class
 *~
+*.lock
+*.~lock*
+*.DS_Store
+*.swp
+*.out
 
 # Package Files #
 *.jar
