@@ -171,35 +171,21 @@ public class FixationPointScorer extends Scorer {
 			
 			// Only care about distractors now, not the target
 			if(trajIdx == targetIdx) { continue; }
-			Trajectory<TrackItFrame> distractorTrajectory = actualFull.getTrajectories().get(targetIdx);
 			
-			for(TobiiFrame subjFrame : subject.getFrames()) {
-	
-				// If either of the subject's eyes weren't found in this frame, skip it
-				if(!subjFrame.bothEyesTracked()) { continue; }
-				long timestamp = subjFrame.getTimestamp();
-	
+			// Get the mapping of fixation points to scores for this specific distractor
+			Trajectory<TrackItFrame> distractorTrajectory = actualFull.getTrajectories().get(trajIdx);		
+			Map<Integer, Double> specificFixationScores = calcFixationPtScores(distractorTrajectory, subject, record);
+
+			// If this distractor beats the other distractors for any fixation point, update
+			for(Integer fixationIdx : specificFixationScores.keySet()) {
 				
-				double frameScore = pFunc.score(dist, timestamp, wallclockOffset, distractorTrajectory, subject);
-	
-				// If the Tobii data goes beyond when the objects were on screen and moving, cut
-				// off the scoring function
-				if( timestamp - wallclockOffset > distractorTrajectory.getLengthMS()) {
-					break;
+				Double currentBestScore = fixationIdxDistractorScores.get(fixationIdx);
+				Double newScore = specificFixationScores.get(fixationIdx);
+				if(null == currentBestScore || newScore.compareTo(currentBestScore) < 0) {
+					fixationIdxDistractorScores.put(fixationIdx, newScore);
 				}
-	
-				Integer fixationPtIdx = subjFrame.getFixationIndex();
-				if(null != fixationPtIdx) {
-					// If this gaze point is part of a fixation point, think about it
-					Double bestScore = fixationIdxDistractorScores.get(fixationPtIdx);
-					if(null == bestScore || frameScore < bestScore) {
-						// We've seen this fixation pt before; is this time's score better than the last best score?
-						// Or we've never seen this fixation pt before, so its current score is the best score
-						fixationIdxDistractorScores.put(fixationPtIdx, frameScore);
-					}
-				}
-				
-			} // End of subject's TobiiFrame loop
+			}
+			
 		} // End of trajectory (distractors) loop
 		
 		
@@ -210,7 +196,13 @@ public class FixationPointScorer extends Scorer {
 			
 			double tScore = fixationIdxTargetScores.get(fixationPtIDx);
 			double dScore = fixationIdxDistractorScores.get(fixationPtIDx);
-			//actualFull.
+			
+			// TODO parameterize these thresholds
+			double closenessThreshold = 150;    // For Euclidean Distance metric, this is #pixels; for current Track-It tests, object width=120px
+			// High score w.r.t. Target, low score w.r.t. Distractor 
+			if(tScore > closenessThreshold && dScore <= closenessThreshold) {
+				fixationNearDistractorNotTargetCt++;
+			}	
 		}
 		
 		

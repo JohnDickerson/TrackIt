@@ -8,7 +8,7 @@ public class Util {
 	public static enum PanelID { START_MENU, GAME, BUFFER1, DISTRACTOR_LINEUP, BUFFER2 };
 
 	public static String getTrackItVersion() {
-		return "2.0.4";
+		return "2.0.5";
 	}
 	
 	// Debug settings, debug utilities
