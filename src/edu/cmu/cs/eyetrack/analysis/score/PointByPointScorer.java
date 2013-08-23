@@ -93,6 +93,6 @@ public class PointByPointScorer extends Scorer{
 	@Override
 	public boolean calcFixationStats(SingleRunScore record, Trial actual, Trajectory<TobiiFrame> subject) {
 		// TODO implement this?  Is it okay to just return nothing here? Probably
-		throw new UnsupportedOperationException();
+		return false;
 	}
 }

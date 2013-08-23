@@ -11,6 +11,7 @@ import java.util.Vector;
 import au.com.bytecode.opencsv.CSVWriter;
 import edu.cmu.cs.eyetrack.analysis.io.Loader;
 import edu.cmu.cs.eyetrack.analysis.score.FixationPointScorer;
+import edu.cmu.cs.eyetrack.analysis.score.PointByPointScorer;
 import edu.cmu.cs.eyetrack.analysis.score.Scorer;
 import edu.cmu.cs.eyetrack.analysis.score.compare.DeltaOffsetPointComparator;
 import edu.cmu.cs.eyetrack.analysis.score.compare.PointComparator;
@@ -40,7 +41,9 @@ public class AnalysisTester {
 		} else {
 			//subjRootDir = "/home/spook/sideprojects/TrackIt/experiments/feb2012/";
 			//subjRootDir = "/usr0/home/jpdicker/Dropbox/organized_DirectTrackIt Files";
-			subjRootDir = "/usr0/home/jpdicker/code/TrackIt/sample/sample_data_August_2013";
+			//subjRootDir = "/usr0/home/jpdicker/Dropbox/Gold Standard";
+			subjRootDir = "/usr0/home/jpdicker/Dropbox/Moving Eyes 2012-2013 New Numbers";
+			//subjRootDir = "/usr0/home/jpdicker/code/TrackIt/sample/sample_data_August_2013";
 			Util.dPrintln("Detected *nix-based operating system");
 		}
 
@@ -61,216 +64,233 @@ public class AnalysisTester {
 			timeOffsets.add(offset);
 		}
 
+		// Lets the user loop through different fixation thresholds (for FixationPointScorer)
+		Vector<Double> fixationThresholds = new Vector<Double>();
+		fixationThresholds.add(150.0);
+		fixationThresholds.add(200.0);
+		fixationThresholds.add(250.0);
+		fixationThresholds.add(300.0);
 
-		for(Long offset : timeOffsets) {
-			
-			PilotOutputRecord recorder = new PilotOutputRecord();
+		for(Double fixationThreshold : fixationThresholds) {
+			for(Long offset : timeOffsets) {
 
-			for(File subjectDir : rootDir.listFiles()) {
+				PilotOutputRecord recorder = new PilotOutputRecord();
 
-				// Skip any non-directory files sitting around at the subject directory level
-				if(!subjectDir.isDirectory()) {
-					Util.dPrintln(subjectDir.getAbsolutePath() + " is not a directory; skipping.");
-					continue;
-				}
+				for(File subjectDir : rootDir.listFiles()) {
 
-				String subjectID = subjectDir.getName();
-
-				// First, load the "gold standards" (e.g., the .csv files) representing the actual trajectories of the
-				// distractors and targets from Track-It
-				//
-				// Load the actual trajectories for each object in this task, taken straight from Track-It
-				Map<String, Experiment> goldStandards = new HashMap<String, Experiment>();
-
-				for(String goldPath : subjectDir.list()) {
-
-					// Ignore non-Track-It files
-					if(!goldPath.endsWith(".csv")) {
+					// Skip any non-directory files sitting around at the subject directory level
+					if(!subjectDir.isDirectory()) {
+						Util.dPrintln(subjectDir.getAbsolutePath() + " is not a directory; skipping.");
 						continue;
 					}
 
-					Experiment goldExperiment = null;
-					try {
-						Util.dPrintln("Attempting to load gold standard data from " + goldPath);
-						goldExperiment = Loader.loadGoldStandard(new File(subjectDir, goldPath));
-					} catch(IOException e) {
-						System.err.println("IO Error loading gold standard file " + goldPath);
-						e.printStackTrace();
-						return;
-					}
+					String subjectID = subjectDir.getName();
 
-					Util.dPrintln("Loaded " + goldPath);
-					Util.dPrintln("Found " + goldExperiment.getNumTrials() + " trials total.");
+					// First, load the "gold standards" (e.g., the .csv files) representing the actual trajectories of the
+					// distractors and targets from Track-It
+					//
+					// Load the actual trajectories for each object in this task, taken straight from Track-It
+					Map<String, Experiment> goldStandards = new HashMap<String, Experiment>();
 
-					// Map the identifier (filename except .csv) to the Experiment
-					String goldID = goldPath.substring(0, goldPath.lastIndexOf('.')).toUpperCase();
-					goldStandards.put(goldID, goldExperiment);
-				}
+					for(String goldPath : subjectDir.list()) {
 
-
-
-				// Second, go through each Track-It file in the directory and compare it against the proper gold
-				// standard that has (hopefully) been loaded and mapped in the goldStandards HashMap.  Unlike with the old
-				// version, we'll need to compare timestamps in Track-It to timestamps in Tobii to synchronize the data
-				for(String subjEventPath : subjectDir.list()) {
-
-					// Ignore non-Tobii files
-					if(!subjEventPath.endsWith(".tsv")) {
-						continue;
-					}
-
-					// Ignore non-Tobii Event-Map files
-					int eventDataIndex = subjEventPath.lastIndexOf("-Event-Data");
-					if(eventDataIndex < 0) {
-						continue;
-					}
-
-					// If the file is a Tobii Event Map file, find its matching
-					// All Data file and move on to loading both
-					String allDataPrefix = subjEventPath.substring(0, eventDataIndex) + "-All-Data";
-					String subjDataPath = null;
-					for(String candSubjDataPath : subjectDir.list()) {
-						if(candSubjDataPath.startsWith(allDataPrefix)) {
-							subjDataPath = candSubjDataPath;
-							break;
+						// Ignore non-Track-It files
+						if(!goldPath.endsWith(".csv")) {
+							continue;
 						}
-					}
 
-					// If we couldn't find a match to this Event Data, tell the user and skip
-					if(subjDataPath == null) {
-						Util.dPrintln("Couldn't find a match to expected Event Data file " + subjEventPath);
-						return;
-					}
-
-					// Now try to match the Tobii data file to the pre-loaded gold standard file from Track-It\
-					// We assume that a file named   02_MackJ_AllSame_01_02-All-Data.tsv  matches with a file named
-					//                               02_MackJ_AllSame_01_02.csv           from Track-It.
-					String goldID = subjEventPath.substring(0, subjEventPath.indexOf('-')).toUpperCase();
-					if(!goldStandards.containsKey(goldID)) {
-						Util.dPrintln("Couldn't find a matching Track-It file for Tobii file " + subjEventPath.toUpperCase() + "; we expected " + goldID + ".csv");
-						return;
-					}
-					Experiment goldExperiment = goldStandards.get(goldID);
-
-
-					// Try to figure out what type of trial this is (ALL DIFF A, ALL SAME B, etc)
-					PilotOutputRecord.TRIAL_TYPE trialType = PilotOutputRecord.TRIAL_TYPE.inferTrialType(subjEventPath);
-					if(trialType.equals(PilotOutputRecord.TRIAL_TYPE.UNKNOWN)) {
-						Util.dPrintln("Couldn't discern what type of trial (e.g., ALL DIFF A, ALL SAME B) this was from the Event Data file " + subjEventPath);
-						return;
-					} else {
-						Util.dPrintln("I think I've found trial type " + trialType + " from filename " + subjEventPath);
-					}
-
-
-					File subjEventFile = new File(subjectDir, subjEventPath);
-					File subjDataFile = new File(subjectDir, subjDataPath);
-
-
-
-					//
-					// Grab the overview event data for a single user
-					TobiiEventMap eventMap = null;
-					try {
-						Util.dPrintln("Attempting to load trial data from subject path " + subjEventPath);
-						eventMap = Loader.loadTobiiEvent3(subjEventFile);
-					} catch(IOException e) {
-						System.err.println("IO Error loading event data file " + subjEventPath);
-						e.printStackTrace();
-						return;
-					}
-
-					Util.dPrintln("Loaded event data from file " + subjEventPath);
-
-					//
-					// Grab the overview event data for a single user
-					TobiiData subjectData = null;
-					try {
-						Util.dPrintln("Attempting to load Tobii data chunk from " + subjDataPath);
-						subjectData = Loader.loadTobiiData3(subjDataFile, eventMap);
-					} catch(IOException e) {
-						System.err.println("Error loading Tobii data chunk from " + subjDataPath);
-						e.printStackTrace();
-						return;
-					}
-
-					Util.dPrintln("Loaded Tobii data chunk from " + subjDataPath);
-
-
-					//
-					// Score the subject's curves against the gold standard
-					Util.dPrintln("Comparing subject's trajectory against gold standard.");
-
-					//long offset = 000;   // in ms
-					PointComparator f = new DeltaOffsetPointComparator(offset);
-
-					double exponent = 2.0;
-					DistanceFunction dist = new EuclideanDistanceFunction();
-					//DistanceFunction dist = new FalloffDistanceFunction(exponent);
-					Scorer scorer = new FixationPointScorer(f, dist);
-
-					// Record ALL score data in separate files, if desired
-					boolean recordEverything = false;
-					Map<Integer, List<Double>> recordMap = null;
-					if(recordEverything) {
-						recordMap = new HashMap<Integer, List<Double>>();
-					}
-
-					// Requires that a subject's eyes be tracked by Tobii for at least X% of the time; else, score = NaN
-					double lookThreshold = 0.0;
-
-					Map<Integer, SingleRunScore> scores = scorer.scoreSubject(goldExperiment, subjectData, recordMap, lookThreshold);
-
-					// Possibly record every single score in a separate file
-					if(recordEverything) {
+						Experiment goldExperiment = null;
 						try {
-							for(Integer trialID : scores.keySet()) {
-								CSVWriter writer = new CSVWriter(new FileWriter(new File("exact_" + trialType + "_" + subjectID + "_" + trialID + "_" + System.currentTimeMillis() + ".csv")));
-								for(Double score : recordMap.get(trialID)) {
-									if(score == null) {
-										// For now, record invalid looks as negative score
-										//score = -1.0;
-										Util.dPrintln("Null score for subject " + subjectID + " on trial " + trialID);
-										continue;
-									}
-									writer.writeNext(new String[] {String.valueOf(score)});
-								}
-								writer.close();
-							}
+							Util.dPrintln("Attempting to load gold standard data from " + goldPath);
+							goldExperiment = Loader.loadGoldStandard(new File(subjectDir, goldPath));
 						} catch(IOException e) {
+							System.err.println("IO Error loading gold standard file " + goldPath);
 							e.printStackTrace();
+							return;
 						}
+
+						Util.dPrintln("Loaded " + goldPath);
+						Util.dPrintln("Found " + goldExperiment.getNumTrials() + " trials total.");
+
+						// Map the identifier (filename except .csv) to the Experiment
+						String goldID = goldPath.substring(0, goldPath.lastIndexOf('.')).toUpperCase();
+						goldStandards.put(goldID, goldExperiment);
 					}
 
 
-					// Record the subject's score in our map of scores, for charting later
-					recorder.addHeader("scorer", scorer.getClass().getName());
-					recorder.addHeader("offset", offset + " ms");
-					recorder.addHeader("exponent", String.valueOf(exponent));
-					recorder.addHeader("comparator function", f.getClass().getName());
-					recorder.addHeader("distance function", dist.getClass().getName());
-					recorder.addHeader("scorer", scorer.getClass().getName());
-					recorder.addHeader("lookThreshold", String.valueOf(lookThreshold));
-					
-					recorder.addScore(trialType, subjectID, scores);
+
+					// Second, go through each Track-It file in the directory and compare it against the proper gold
+					// standard that has (hopefully) been loaded and mapped in the goldStandards HashMap.  Unlike with the old
+					// version, we'll need to compare timestamps in Track-It to timestamps in Tobii to synchronize the data
+					for(String subjEventPath : subjectDir.list()) {
+
+						// Ignore non-Tobii files
+						if(!subjEventPath.endsWith(".tsv")) {
+							continue;
+						}
+
+						// Ignore non-Tobii Event-Map files
+						int eventDataIndex = subjEventPath.lastIndexOf("-Event-Data");
+						if(eventDataIndex < 0) {
+							continue;
+						}
+
+						// If the file is a Tobii Event Map file, find its matching
+						// All Data file and move on to loading both
+						String allDataPrefix = subjEventPath.substring(0, eventDataIndex) + "-All-Data";
+						String subjDataPath = null;
+						for(String candSubjDataPath : subjectDir.list()) {
+							if(candSubjDataPath.startsWith(allDataPrefix)) {
+								subjDataPath = candSubjDataPath;
+								break;
+							}
+						}
+
+						// If we couldn't find a match to this Event Data, tell the user and skip
+						if(subjDataPath == null) {
+							Util.dPrintln("Couldn't find a match to expected Event Data file " + subjEventPath);
+							return;
+						}
+
+						// Now try to match the Tobii data file to the pre-loaded gold standard file from Track-It\
+						// We assume that a file named   02_MackJ_AllSame_01_02-All-Data.tsv  matches with a file named
+						//                               02_MackJ_AllSame_01_02.csv           from Track-It.
+						String goldID = subjEventPath.substring(0, subjEventPath.indexOf('-')).toUpperCase();
+						if(!goldStandards.containsKey(goldID)) {
+							Util.dPrintln("Couldn't find a matching Track-It file for Tobii file " + subjEventPath.toUpperCase() + "; we expected " + goldID + ".csv");
+							return;
+						}
+						Experiment goldExperiment = goldStandards.get(goldID);
 
 
-				} // end of individual subject's listing loop
+						// Try to figure out what type of trial this is (ALL DIFF A, ALL SAME B, etc)
+						PilotOutputRecord.TRIAL_TYPE trialType = PilotOutputRecord.TRIAL_TYPE.inferTrialType(subjEventPath);
+						if(trialType.equals(PilotOutputRecord.TRIAL_TYPE.UNKNOWN)) {
+							Util.dPrintln("Couldn't discern what type of trial (e.g., ALL DIFF A, ALL SAME B) this was from the Event Data file " + subjEventPath);
+							return;
+						} else {
+							Util.dPrintln("I think I've found trial type " + trialType + " from filename " + subjEventPath);
+						}
 
-				// For printing purposes, make sure we fill in any Tobii files that were missing with NaN scores
-				recorder.fakeMissedTobiiTests(subjectID);
 
-			} // end of root directory listing loop
+						File subjEventFile = new File(subjectDir, subjEventPath);
+						File subjDataFile = new File(subjectDir, subjDataPath);
 
 
-			// Write all our records to a .csv file
-			try {
-				recorder.writeToCSV("eyetrack_offset_" + offset.toString() + "_" + System.currentTimeMillis() + ".csv");
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
 
-		}
+						//
+						// Grab the overview event data for a single user
+						TobiiEventMap eventMap = null;
+						try {
+							Util.dPrintln("Attempting to load trial data from subject path " + subjEventPath);
+							eventMap = Loader.loadTobiiEvent3(subjEventFile);
+						} catch(IOException e) {
+							System.err.println("IO Error loading event data file " + subjEventPath);
+							e.printStackTrace();
+							return;
+						}
+
+						Util.dPrintln("Loaded event data from file " + subjEventPath);
+
+						//
+						// Grab the overview event data for a single user
+						TobiiData subjectData = null;
+						try {
+							Util.dPrintln("Attempting to load Tobii data chunk from " + subjDataPath);
+							subjectData = Loader.loadTobiiData3(subjDataFile, eventMap);
+						} catch(IOException e) {
+							System.err.println("Error loading Tobii data chunk from " + subjDataPath);
+							e.printStackTrace();
+							return;
+						}
+
+						Util.dPrintln("Loaded Tobii data chunk from " + subjDataPath);
+
+
+						//
+						// Score the subject's curves against the gold standard
+						Util.dPrintln("Comparing subject's trajectory against gold standard.");
+
+						//long offset = 000;   // in ms
+						PointComparator f = new DeltaOffsetPointComparator(offset);
+
+						double exponent = 2.0;
+						DistanceFunction dist = new EuclideanDistanceFunction();
+						//DistanceFunction dist = new FalloffDistanceFunction(exponent);
+						Scorer scorer = new FixationPointScorer(f, dist, fixationThreshold);
+						//Scorer scorer = new PointByPointScorer(f, dist);
+
+
+						// Record ALL score data in separate files, if desired
+						boolean recordEverything = false;
+						Map<Integer, List<Double>> recordMap = null;
+						if(recordEverything) {
+							recordMap = new HashMap<Integer, List<Double>>();
+						}
+
+						// Requires that a subject's eyes be tracked by Tobii for at least X% of the time; else, score = NaN
+						double lookThreshold = 0.0;
+
+						//if(goldExperiment.getTrials().size() != 3) { 
+						//	System.out.println(goldExperiment); 
+						//	System.exit(-1); 
+						//}
+
+						Map<Integer, SingleRunScore> scores = scorer.scoreSubject(goldExperiment, subjectData, recordMap, lookThreshold);
+
+						// Possibly record every single score in a separate file
+						if(recordEverything) {
+							try {
+								for(Integer trialID : scores.keySet()) {
+									CSVWriter writer = new CSVWriter(new FileWriter(new File("exact_" + trialType + "_" + subjectID + "_" + trialID + "_" + System.currentTimeMillis() + ".csv")));
+									for(Double score : recordMap.get(trialID)) {
+										if(score == null) {
+											// For now, record invalid looks as negative score
+											//score = -1.0;
+											Util.dPrintln("Null score for subject " + subjectID + " on trial " + trialID);
+											continue;
+										}
+										writer.writeNext(new String[] {String.valueOf(score)});
+									}
+									writer.close();
+								}
+							} catch(IOException e) {
+								e.printStackTrace();
+							}
+						}
+
+
+						// Record the subject's score in our map of scores, for charting later
+						recorder.addHeader("scorer", scorer.getClass().getName());
+						recorder.addHeader("offset", offset + " ms");
+						recorder.addHeader("exponent", String.valueOf(exponent));
+						recorder.addHeader("comparator function", f.getClass().getName());
+						recorder.addHeader("distance function", dist.getClass().getName());
+						recorder.addHeader("scorer", scorer.getClass().getName());
+						recorder.addHeader("fixationThreshold", String.valueOf(fixationThreshold));
+						recorder.addHeader("lookThreshold", String.valueOf(lookThreshold) + " %");
+
+						recorder.addScore(trialType, subjectID, scores);
+
+
+					} // end of individual subject's listing loop
+
+					// For printing purposes, make sure we fill in any Tobii files that were missing with NaN scores
+					recorder.fakeMissedTobiiTests(subjectID);
+
+				} // end of root directory listing loop
+
+
+				// Write all our records to a .csv file
+				try {
+					recorder.writeToCSV("eyetrack_offset_" + offset.toString() + "_" + System.currentTimeMillis() + ".csv");
+				} catch(IOException e) {
+					e.printStackTrace();
+				}
+
+			} // end of time offsets outer loop
+		} // end of fixation thresholds outer loop
+
 		return;
 	}
 }

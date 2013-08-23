@@ -15,8 +15,12 @@ import edu.cmu.cs.eyetrack.test.SingleRunScore;
 
 public class FixationPointScorer extends Scorer {
 
-	public FixationPointScorer(PointComparator pFunc, DistanceFunction dist) {
+	 // For Euclidean Distance metric, this is #pixels; for current Track-It tests, object width=120px
+	private double closenessThreshold = 150;   
+
+	public FixationPointScorer(PointComparator pFunc, DistanceFunction dist, double closenessThreshold) {
 		super(pFunc, dist);
+		this.closenessThreshold = closenessThreshold;
 	}
 
 	public String getName() {
@@ -32,6 +36,14 @@ public class FixationPointScorer extends Scorer {
 	}
 	
 	
+	public double getClosenessThreshold() {
+		return closenessThreshold;
+	}
+
+	public void setClosenessThreshold(double closenessThreshold) {
+		this.closenessThreshold = closenessThreshold;
+	}
+
 	/**
 	 * 
 	 * @param actual
@@ -154,8 +166,6 @@ public class FixationPointScorer extends Scorer {
 	@Override
 	public boolean calcFixationStats(SingleRunScore record, Trial actualFull, Trajectory<TobiiFrame> subject) {
 		
-		long wallclockOffset = subject.getTimestampRecStart();
-		
 		// Grab the target object's trajectory; we'll ignore fixation points that are close to this
 		int targetIdx = actualFull.getTargetIdx();
 		Trajectory<TrackItFrame> targetTrajectory = actualFull.getTrajectories().get(targetIdx);
@@ -197,8 +207,7 @@ public class FixationPointScorer extends Scorer {
 			double tScore = fixationIdxTargetScores.get(fixationPtIDx);
 			double dScore = fixationIdxDistractorScores.get(fixationPtIDx);
 			
-			// TODO parameterize these thresholds
-			double closenessThreshold = 150;    // For Euclidean Distance metric, this is #pixels; for current Track-It tests, object width=120px
+
 			// High score w.r.t. Target, low score w.r.t. Distractor 
 			if(tScore > closenessThreshold && dScore <= closenessThreshold) {
 				fixationNearDistractorNotTargetCt++;
