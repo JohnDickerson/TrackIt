@@ -2,7 +2,7 @@ package edu.cmu.cs.eyetrack.helper;
 
 import java.io.File;
 
-public class Util {
+public abstract class Util {
 	
 	
 	public static enum PanelID { START_MENU, GAME, BUFFER1, DISTRACTOR_LINEUP, BUFFER2 };
@@ -30,5 +30,9 @@ public class Util {
 			ext = s.substring(idx+1).toLowerCase();
 		}
 		return ext;
+	}
+	
+	public static boolean isRunningOnMacOSX() {
+		return System.getProperty("os.name").toLowerCase().startsWith("mac os x");
 	}
 }

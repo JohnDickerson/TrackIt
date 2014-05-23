@@ -7,12 +7,14 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Shape;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -115,6 +117,22 @@ public class GameScreen extends Screen {
 		}
 	}
 
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public static boolean enableOSXFullscreen(Window window) {
+	    if(null == window) { return false; }
+		try {
+	        Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
+	        Class params[] = new Class[]{Window.class, Boolean.TYPE};
+	        Method method = util.getMethod("setWindowCanFullScreen", params);
+	        method.invoke(util, window, true);
+	        return true;
+	    } catch (ClassNotFoundException e1) {
+	    } catch (Exception e) {
+	    	Util.dPrintln("OS X 10.7+ fullscreen API not supported or failed.");
+	    }
+		return false;
+	}
+	
 	@Override
 	protected void initialize() {
 
@@ -132,7 +150,12 @@ public class GameScreen extends Screen {
 			// Kill the titlebar and fullscreen for the experiment
 			if( experiment.getUsesFullscreen() ) {
 				Util.dPrintln("Attempting to switch to fullscreen mode for trials.");
-				if( GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported() ) {
+				boolean keepTrying = true;
+				if(Util.isRunningOnMacOSX()) {
+					Util.dPrintln("Attempting Mac OS X native fullscreen API.");
+					keepTrying = !GameScreen.enableOSXFullscreen(owner);
+				}
+				if(keepTrying && GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported() ) {
 					GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(owner);
 					experiment.updateInsets(owner.getSize());
 				} else {
