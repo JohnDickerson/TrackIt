@@ -48,14 +48,14 @@ public class Trial implements CSVWritable{
 		userClickGridPos = new Coordinate<Integer>(-1, -1);
 	}
 	
-	@Override
+	//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 	public String[] getCSVHeader() {
 		return new String[] {
 			"BEGIN New Trial"
 		};
 	}
 
-	@Override
+	//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 	public List<String[]> getCSVData() {
 		
 		List<String[]> data = new ArrayList<String[]>();

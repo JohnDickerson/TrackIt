@@ -41,7 +41,7 @@ public class Settings implements CSVWritable {
 		this.user = user;
 	}
 
-	@Override
+	//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 	public String[] getCSVHeader() {
 		return new String[] {
 				"Track-It Version",
@@ -70,7 +70,7 @@ public class Settings implements CSVWritable {
 		};
 	}
 
-	@Override
+	//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 	public List<String[]> getCSVData() {
 
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");

@@ -135,6 +135,8 @@ public class GameScreen extends Screen {
 				if( GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported() ) {
 					GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(owner);
 					experiment.updateInsets(owner.getSize());
+				} else {
+					Util.dPrintln("getDefaultScreenDevice().isFullScreenSupported() returned False; cannot use fullscreen mode.");
 				}
 			}
 
@@ -444,7 +446,7 @@ public class GameScreen extends Screen {
 	
 	class GridBoxMouseListener implements MouseListener {
 
-		@Override 
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5 
 		public void mouseClicked(MouseEvent e) {
 
 			// If the animation is done and we are waiting for the participant to select
@@ -454,23 +456,23 @@ public class GameScreen extends Screen {
 			}
 		}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseEntered(MouseEvent e) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseExited(MouseEvent e) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mousePressed(MouseEvent e) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseReleased(MouseEvent e) {}
 
 	}
 
 	class BasicTrialKeyListener implements KeyListener {
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void keyPressed(KeyEvent e) {
 			// If the user presses the Spacebar, start the trial
 			if(e.getKeyCode() == KeyEvent.VK_SPACE && status == Status.UNSTARTED) {
@@ -482,10 +484,10 @@ public class GameScreen extends Screen {
 
 		}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void keyReleased(KeyEvent e) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void keyTyped(KeyEvent e) {}
 	}
 
@@ -501,7 +503,7 @@ public class GameScreen extends Screen {
 			this.trialStart = 0L;
 		}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void run() {
 
 			while(Thread.currentThread() == animUpdater) {

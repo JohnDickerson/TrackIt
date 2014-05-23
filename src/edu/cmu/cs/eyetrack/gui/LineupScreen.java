@@ -40,15 +40,15 @@ public class LineupScreen extends Screen {
 		addMouseListener(new LineupMouseListener());
 		addKeyListener(new KeyListener() {
 
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 					processSelectionEvent(null, false, 0);
 				}
 			}
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void keyReleased(KeyEvent e) {}
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void keyTyped(KeyEvent e) {}
 		});
 	}
@@ -221,7 +221,7 @@ public class LineupScreen extends Screen {
 	}
 	
 	private class LineupMouseListener implements MouseListener {
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseClicked(MouseEvent e) {
 			
 			int x = e.getX(), y = e.getY();
@@ -259,16 +259,16 @@ public class LineupScreen extends Screen {
 			
 		}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseEntered(MouseEvent arg0) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseExited(MouseEvent arg0) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mousePressed(MouseEvent arg0) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseReleased(MouseEvent arg0) {}
 	}
 	

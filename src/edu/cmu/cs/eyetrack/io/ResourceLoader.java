@@ -88,7 +88,7 @@ public class ResourceLoader {
 		File imgDirectory = new File(absolutePath);
 		File[] files = imgDirectory.listFiles(new FilenameFilter() {
 
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public boolean accept(File dir, String name) {
 				
 				// Filter all non-image files

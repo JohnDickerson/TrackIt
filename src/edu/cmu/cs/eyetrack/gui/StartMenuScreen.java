@@ -173,7 +173,7 @@ public class StartMenuScreen extends Screen {
 		chkRandomTarget = new JCheckBox("Use Random");
 		chkRandomTarget.setSelected( !cbxTargetType.isEnabled() );
 		chkRandomTarget.addChangeListener(new ChangeListener() {
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void stateChanged(ChangeEvent e) {
 				cbxTargetType.setEnabled(!chkRandomTarget.isSelected());
 				lblTargetType.setEnabled(!chkRandomTarget.isSelected());
@@ -222,14 +222,14 @@ public class StartMenuScreen extends Screen {
 		JLabel lblGridYSize = new JLabel("Grid Height:", JLabel.TRAILING);
 		spnGridXSize = new JSpinner(new SpinnerNumberModel(3,1,10,1));
 		spnGridXSize.addChangeListener(new ChangeListener() {
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void stateChanged(ChangeEvent arg0) {
 				sanitizeNumDistractors();
 			}
 		});
 		spnGridYSize = new JSpinner(new SpinnerNumberModel(3,1,10,1));
 		spnGridYSize.addChangeListener(new ChangeListener() {
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void stateChanged(ChangeEvent arg0) {
 				sanitizeNumDistractors();
 			}
@@ -245,7 +245,7 @@ public class StartMenuScreen extends Screen {
 		final JLabel lblImageDirectory = new JLabel("Image Directory:", JLabel.TRAILING);
 		chkUseBackgroundImages = new JCheckBox("Use Images", false);
 		chkUseBackgroundImages.addChangeListener(new ChangeListener() {
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void stateChanged(ChangeEvent e) {
 				txtImageDirectory.setEnabled(chkUseBackgroundImages.isSelected());
 				txtImageDirectory.setForeground(Color.BLACK);
@@ -326,7 +326,7 @@ public class StartMenuScreen extends Screen {
 		btnExit.setMnemonic(KeyEvent.VK_E);
 		btnExit.setToolTipText("Click to exit the program.");
 		btnExit.addActionListener(new ActionListener() {
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void actionPerformed(ActionEvent arg0) {
 				owner.killAndQuit();
 			}
@@ -486,7 +486,7 @@ public class StartMenuScreen extends Screen {
 			this.textField = textField;
 		}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseClicked(MouseEvent arg0) {
 			
 			// Clicking on this shouldn't do anything if we're not using images
@@ -514,13 +514,13 @@ public class StartMenuScreen extends Screen {
 			textField.setText(selectedDirectory);
 		}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseEntered(MouseEvent arg0) {}
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseExited(MouseEvent arg0) {}
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mousePressed(MouseEvent arg0) {}
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseReleased(MouseEvent arg0) {}	
 	}
 	
@@ -720,7 +720,7 @@ public class StartMenuScreen extends Screen {
 
 		boolean selectedBefore = false;
 		
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void focusGained(FocusEvent e) {
 			
 			// We only want to select the entire text field upon the first
@@ -733,7 +733,7 @@ public class StartMenuScreen extends Screen {
 			}
 		}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void focusLost(FocusEvent e) {
 		
 		}

@@ -28,10 +28,10 @@ public abstract class Screen extends JPanel {
 				}
 			}
 
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void keyReleased(KeyEvent e) {}
 
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void keyTyped(KeyEvent e) {}
 		});
 
