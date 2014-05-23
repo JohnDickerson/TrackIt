@@ -127,6 +127,7 @@ public class GameScreen extends Screen {
 	        method.invoke(util, window, true);
 	        return true;
 	    } catch (ClassNotFoundException e1) {
+	      	Util.dPrintln("OS X 10.7+ fullscreen API not supported or failed.");
 	    } catch (Exception e) {
 	    	Util.dPrintln("OS X 10.7+ fullscreen API not supported or failed.");
 	    }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project eyeTrack">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="/Users/spook/code/TrackIt/EyeTrack.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="edu.cmu.cs.eyetrack.gui.EyeTrack"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="/Users/spook/code/TrackIt/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="/Users/spook/code/TrackIt/lib/jcalendar-1.3.3.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/Users/spook/code/TrackIt/lib/opencsv-2.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/Users/spook/code/TrackIt/lib/joda-time-1.6.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/Users/spook/code/TrackIt/lib/timingframework-swing-3.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/Users/spook/code/TrackIt/lib/images.jar"/>
+        </jar>
+    </target>
+</project>
