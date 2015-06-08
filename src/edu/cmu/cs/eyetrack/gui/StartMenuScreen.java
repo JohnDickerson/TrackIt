@@ -191,13 +191,13 @@ public class StartMenuScreen extends Screen {
 		final JLabel lblRandomTarget = new JLabel("Target:", JLabel.TRAILING);
 		chkRandomTarget = new JCheckBox("Random?");
 		chkRandomTarget.setSelected( !cbxTargetType.isEnabled() );
-		chkRandomTarget.addChangeListener(new ChangeListener() {
+		chkRandomTarget.addItemListener(new ItemListener() {
 			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
-			public void stateChanged(ChangeEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				cbxTargetType.setEnabled(!chkRandomTarget.isSelected());
 				lblTargetType.setEnabled(!chkRandomTarget.isSelected());
-				cbxTargetColor.setEnabled(!chkRandomTarget.isSelected());
-				lblTargetColor.setEnabled(!chkRandomTarget.isSelected());
+				cbxTargetColor.setEnabled(!chkRandomTarget.isSelected() && !rdoShapeTypeUColorado.isSelected());
+				lblTargetColor.setEnabled(!chkRandomTarget.isSelected() && !rdoShapeTypeUColorado.isSelected());
 			}
 		});
 		lblRandomTarget.setLabelFor(chkRandomTarget);
@@ -221,6 +221,8 @@ public class StartMenuScreen extends Screen {
 				if(chkRandomTarget.isSelected()) {
 					cbxTargetType.setSelectedIndex((new Random()).nextInt(cbxTargetType.getItemCount()));
 				}
+				cbxTargetColor.setEnabled(true);
+				lblTargetColor.setEnabled(true);
 			}
 		});
 		rdoShapeTypeUColorado.addItemListener(new ItemListener() {
@@ -230,6 +232,8 @@ public class StartMenuScreen extends Screen {
 				if(chkRandomTarget.isSelected()) {
 					cbxTargetType.setSelectedIndex((new Random()).nextInt(cbxTargetType.getItemCount()));
 				}
+				cbxTargetColor.setEnabled(false);  // can't select colors for UColorado case
+				lblTargetColor.setEnabled(false);
 			}
 		});
 

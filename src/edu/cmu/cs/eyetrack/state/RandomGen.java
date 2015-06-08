@@ -13,6 +13,7 @@ import org.jdesktop.core.animation.timing.KeyFramesBuilder;
 import org.jdesktop.core.animation.timing.interpolators.LinearInterpolator;
 import org.jdesktop.core.animation.timing.interpolators.SplineInterpolator;
 
+import edu.cmu.cs.eyetrack.gui.shapes.Stimulus.StimulusClass;
 import edu.cmu.cs.eyetrack.helper.Coordinate;
 import edu.cmu.cs.eyetrack.helper.Util;
 import edu.cmu.cs.eyetrack.state.Settings.Experiment;
@@ -52,7 +53,7 @@ public class RandomGen {
 
 	private double blockWidth;
 	private double blockHeight;
-	
+
 	public RandomGen(Random random, Experiment exp) {
 		this.random = random;
 		this.exp = exp;
@@ -68,17 +69,28 @@ public class RandomGen {
 
 	public List<Color> getRandomColors(int numColors) {
 
-		if(numColors > colorList.size()) {
-			Util.dPrintln("WARNING: More unique distractors than there are unique colors; will have repeats.");
-		}
-
-		Collections.shuffle(colorList, random);
-
 		List<Color> genList = new ArrayList<Color>();
-		for(int idx=0; idx<numColors; idx++) {
-			genList.add(colorList.get(idx % colorList.size()));
-		}
 
+		// Colorado only ever wants gray, CMU wants rainbow colors
+		if(exp.getStimulusClass().equals(StimulusClass.UCOLORADO)) {
+			// Only return grays
+			for(int idx=0; idx<numColors; idx++) {
+				genList.add(Color.GRAY);
+			}
+
+		} else { 
+			// Return random colors from our color list (default for CMU experiments)
+			if(numColors > colorList.size()) {
+				Util.dPrintln("WARNING: More unique distractors than there are unique colors; will have repeats.");
+			}
+
+			Collections.shuffle(colorList, random);
+
+			for(int idx=0; idx<numColors; idx++) {
+				genList.add(colorList.get(idx % colorList.size()));
+			}
+		}
+		
 		return genList;
 	}
 
@@ -142,7 +154,7 @@ public class RandomGen {
 		return new Coordinate<Integer>(newX, newY);
 	}
 
-	
+
 	// Picks a new pixel coordinate on the screen, different than the current pixel position
 	public double getNextPixelPos(Coordinate<Integer> currPos, Coordinate<Integer> nextPos, int xBuffer, int yBuffer, double speed, double maxDist, boolean useCentersOnly) {
 
@@ -159,11 +171,11 @@ public class RandomGen {
 			do {
 				rx = random.nextInt( (int) neighborhood.getWidth() );
 				ry = random.nextInt( (int) neighborhood.getHeight() );
-				
+
 				// If we choose a point "near" the center, roll a die to see if we want to re-calc a point
 				nearTheCenter = (rx > 0.33*neighborhood.getWidth() && rx < 0.67*neighborhood.getWidth() &&
-					ry > 0.33*neighborhood.getHeight() && ry < 0.67*neighborhood.getHeight());
-				
+						ry > 0.33*neighborhood.getHeight() && ry < 0.67*neighborhood.getHeight());
+
 			} while(nearTheCenter && random.nextInt(3) > 0);
 
 			newX = (int) neighborhood.getX() + rx;
@@ -174,7 +186,7 @@ public class RandomGen {
 				newX = gridCenter.getX();
 				newY = gridCenter.getY();
 			}
-			
+
 		} while(newX == currPos.getX() && newY == currPos.getY() );
 
 		// Tell the object to move to this new random point
@@ -195,13 +207,13 @@ public class RandomGen {
 	protected int yToGrid(double y) {
 		return (int) ( (y - exp.getInsetY() ) / blockHeight);
 	}
-	
+
 	protected Coordinate<Integer> getGridCenter(int gridX, int gridY) {
 		return new Coordinate<Integer>( 
 				(int) (exp.getInsetX() + (gridX * blockWidth) + (0.5*blockWidth)),
 				(int) (exp.getInsetY() + (gridY * blockHeight) + (0.5*blockHeight)));
 	}
-	
+
 	public double calcKeyFrames(List<KeyFrames<Integer>> framesList,
 			double minJumpMS, double maxJumpMS, double trialLength, 
 			int xBuffer, int yBuffer, 
@@ -271,9 +283,9 @@ public class RandomGen {
 				if(exp.getMotionInterpolationType().equals(MotionInterpolationType.LINEAR)) {
 					interp = LinearInterpolator.getInstance();
 				} else {
-					 interp = SPLINES[random.nextInt(SPLINES.length)];
+					interp = SPLINES[random.nextInt(SPLINES.length)];
 				}
-				
+
 				builderX.addFrame(nextPos.getX().intValue(), timeFrac, interp);
 				builderY.addFrame(nextPos.getY().intValue(), timeFrac, interp);	
 			} else {
@@ -299,7 +311,7 @@ public class RandomGen {
 				} else {
 					interp = SPLINES[random.nextInt(SPLINES.length)];
 				}
-				
+
 				builderX.addFrame(nextPos.getX().intValue(), timeFrac, interp);
 				builderY.addFrame(nextPos.getY().intValue(), timeFrac, interp);	
 			}

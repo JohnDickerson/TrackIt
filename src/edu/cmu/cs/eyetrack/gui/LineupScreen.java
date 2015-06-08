@@ -16,6 +16,7 @@ import java.util.Set;
 
 import edu.cmu.cs.eyetrack.gui.shapes.Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory;
+import edu.cmu.cs.eyetrack.gui.shapes.Stimulus.StimulusClass;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory.StimulusType;
 import edu.cmu.cs.eyetrack.helper.Util;
 import edu.cmu.cs.eyetrack.helper.Util.PanelID;
@@ -82,8 +83,12 @@ public class LineupScreen extends Screen {
 		// Each stimulus can have only one color, and each stimulus must have a unique color
 		Set<Color> safeColors = new HashSet<Color>( owner.getGameState().getRandomGen().getRandomColors());
 		
-		for(Stimulus stimulus : activeTrial.getStims()) {
-			safeColors.remove( stimulus.getColor() );
+		// If we are randomizing colors (standard CMU experiments), remove illegal colors;
+		// for UColorado, they want all gray all the time so it is the only color and is always legal
+		if(!owner.getGameState().getSettings().getExperiment().getStimulusClass().equals(StimulusClass.UCOLORADO)) {
+			for(Stimulus stimulus : activeTrial.getStims()) {
+				safeColors.remove( stimulus.getColor() );
+			}
 		}
 		
 		for(Stimulus stimulus : factoryAllStims) {

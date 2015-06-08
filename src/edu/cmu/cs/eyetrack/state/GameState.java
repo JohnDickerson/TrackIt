@@ -56,27 +56,31 @@ public class GameState {
 		// Kill everything that's been inserted before.
 		StimulusFactory.getInstance().reset();
 
-		// Color each stimulus a different, randomly generated (someday...) color
-		int totalNumberOfStimuli; 
+		// Color each stimulus a different, randomly generated (someday...) color 
+		List<Color> stimColors;
 		switch(stimulusClass) {
 		case CMU:
-			totalNumberOfStimuli = 9;
+			// CMU wants a random rainbow of colors
+			int totalNumberOfStimuli = 9;
+			if(getRandomGen() == null) {
+				stimColors = new ArrayList<Color>();
+				for(int idx=0; idx<totalNumberOfStimuli; idx++) {
+					stimColors.add(Color.BLACK);
+				}
+			} else {
+				stimColors = getRandomGen().getRandomColors( totalNumberOfStimuli );
+			}
 			break;
 		case UCOLORADO:
+			// UColorado wants only gray
 			totalNumberOfStimuli = 11;
+			stimColors = new ArrayList<Color>();
+			for(int idx=0; idx<totalNumberOfStimuli; idx++) {
+				stimColors.add(Color.GRAY);
+			}
 			break;
 		default:
 			throw new IllegalArgumentException("Cannot understand StimulusClass type " + stimulusClass);
-		}
-
-		List<Color> stimColors;
-		if(getRandomGen() == null) {
-			stimColors = new ArrayList<Color>();
-			for(int idx=0; idx<totalNumberOfStimuli; idx++) {
-				stimColors.add(Color.BLACK);
-			}
-		} else {
-			stimColors = getRandomGen().getRandomColors( totalNumberOfStimuli );
 		}
 
 		// Register some Stimuli as targets, some as distractors
