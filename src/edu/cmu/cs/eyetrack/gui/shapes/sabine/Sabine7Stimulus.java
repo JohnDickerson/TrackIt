@@ -11,7 +11,7 @@ public class Sabine7Stimulus extends Stimulus {
 	private int radius;
 	
 	public Sabine7Stimulus(String name, Color color, int diameter) {
-		super(name, color, diameter, diameter);
+		super(name, color, diameter, diameter, color);
 		this.radius = diameter/2;
 		makeShape(0,0);
 	}

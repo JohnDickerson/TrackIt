@@ -30,14 +30,14 @@ public class LineupScreen extends Screen {
 	private Trial activeTrial;
 	private List<Stimulus> stimList;
 	private Stimulus stimTarget;
-	
+
 	// Timestamp when the lineup first displays to the user; used for RTs on click
 	private long initializationTime;
-	
-	
+
+
 	public LineupScreen(EyeTrack owner, PanelID nextScreen) {
 		super(owner, nextScreen);
-		
+
 		addMouseListener(new LineupMouseListener());
 		addKeyListener(new KeyListener() {
 
@@ -53,12 +53,12 @@ public class LineupScreen extends Screen {
 			public void keyTyped(KeyEvent e) {}
 		});
 	}
-	
+
 	@Override
 	protected void initialize() {
-	
+
 		Experiment exp = owner.getGameState().getSettings().getExperiment();
-		
+
 		// Grab all the stimuli that were used in the real trial
 		activeTrial = owner.getGameState().getActiveTrial();
 		// Shuffle a copy of the stimulus list, display in this order
@@ -67,7 +67,7 @@ public class LineupScreen extends Screen {
 		List<Stimulus> factoryAllStims = StimulusFactory.getInstance().createOneOfEach(StimulusType.TARGET);
 		stimList = new ArrayList<Stimulus>();
 		stimTarget = activeTrial.getTarget();
-		
+
 		// Randomly line stimuli up; user tries to select the one s/he followed earlier
 		int numColumns, colWidth, numRows, rowHeight;
 		if(exp.getMemCheckType().equals(Settings.MemoryCheckType.m2X2)) {
@@ -79,10 +79,10 @@ public class LineupScreen extends Screen {
 		}
 		colWidth = exp.getPixelWidth() / numColumns;
 		rowHeight = exp.getPixelHeight() / numRows;	
-		
+
 		// Each stimulus can have only one color, and each stimulus must have a unique color
 		Set<Color> safeColors = new HashSet<Color>( owner.getGameState().getRandomGen().getRandomColors());
-		
+
 		// If we are randomizing colors (standard CMU experiments), remove illegal colors;
 		// for UColorado, they want all gray all the time so it is the only color and is always legal
 		if(!owner.getGameState().getSettings().getExperiment().getStimulusClass().equals(StimulusClass.UCOLORADO)) {
@@ -90,9 +90,9 @@ public class LineupScreen extends Screen {
 				safeColors.remove( stimulus.getColor() );
 			}
 		}
-		
+
 		for(Stimulus stimulus : factoryAllStims) {
-			
+
 			// Hack to make sure colors match up
 			boolean colorOkay = false;
 			for(Stimulus trialStim : activeTrial.getStims()) {
@@ -101,40 +101,44 @@ public class LineupScreen extends Screen {
 					colorOkay = true;
 				}
 			}
-				
+
 			if(!colorOkay) {
-				
+
 				Color newColor;
-				if(!safeColors.iterator().hasNext()) {
-					// If we have no colors left, this behavior is undefined; return black?
-					newColor = Color.BLACK;
+				if(owner.getGameState().getSettings().getExperiment().getStimulusClass().equals(StimulusClass.UCOLORADO)) {
+					newColor = owner.getGameState().getRandomGen().getRandomColors().get(0);
 				} else {
-					// Grab the next unassigned color, not taken by previously seen stims or other random gens
-					newColor = safeColors.iterator().next();
+					if(!safeColors.iterator().hasNext()) {
+						// If we have no colors left, this behavior is undefined; return black?
+						newColor = Color.BLACK;
+					} else {
+						// Grab the next unassigned color, not taken by previously seen stims or other random gens
+						newColor = safeColors.iterator().next();
+					}
 				}
-			
+
 				// Set the stimulus to own this color; nobody else can use it
 				stimulus.setColor( newColor );
 				safeColors.remove( newColor );
 			}
-			
+
 			stimList.add(stimulus);
 		}
-		
+
 		// Randomize placement of target and distractors
 		Collections.shuffle(stimList);
-					
+
 		// CMU only wants to display 4 stimuli.  
 		if(exp.getMemCheckType().equals(Settings.MemoryCheckType.m2X2)) {
-			
+
 			List<Stimulus> shortenedList = new ArrayList<Stimulus>();
-			
+
 			// Must have target from last trial
 			shortenedList.add(stimTarget);
-			
+
 			// Add up to three other distractors that were in the trial, if three exist
 			for(Stimulus stimulus : activeTrial.getStims()) {
-				
+
 				boolean isUnique = true;
 				for(Stimulus usedStim : shortenedList) {
 					if(usedStim.isEquivalent(stimulus)) {
@@ -145,21 +149,21 @@ public class LineupScreen extends Screen {
 				if(isUnique) {
 					shortenedList.add(stimulus);
 				}
-				
+
 				if(shortenedList.size() >= 4) {
 					break;
 				}
 			}
-			
-			
+
+
 			// If we've exhausted the trial's target and distractors, add random stimuli until we hit 4
-				
+
 			for(Stimulus stimulus : stimList) {
-				
+
 				if(shortenedList.size() >= 4) {
 					break;
 				}
-				
+
 				boolean isUnique = true;
 				for(Stimulus trialStim : shortenedList) {
 					if(trialStim.isEquivalent(stimulus)) {
@@ -174,29 +178,29 @@ public class LineupScreen extends Screen {
 
 			stimList = shortenedList;
 		}
-		
+
 		// Randomize placement of target and distractors
 		Collections.shuffle(stimList);
-		
+
 		// Place the corrected stimulus in their correct locations
 		int colIdx=0, rowIdx=0;
 		for(Stimulus stimulus : stimList) {
-			
+
 			if(colIdx >= numColumns) {
 				colIdx = 0;
 				rowIdx++;
 			}
-			
+
 			// Send polygon to middle of its grid
 			int xPos = exp.getInsetX() + (int) ((colIdx+0.5) * colWidth); 
 			int yPos = exp.getInsetY() + (int) ((rowIdx+0.5) * rowHeight);
-			
+
 			//System.out.println("Moving " + stimulus.getName() + " to position <" + xPos + ", " + yPos + ">.");
 			stimulus.move(xPos, yPos);
-			
+
 			colIdx++;
 		}
-		
+
 		setLayout(new BorderLayout());
 
 		initializationTime = System.currentTimeMillis();
@@ -204,44 +208,44 @@ public class LineupScreen extends Screen {
 
 	@Override
 	public void paintComponent(Graphics g) {
-		
+
 		super.paintComponent(g);
-				
+
 		Graphics2D g2d = (Graphics2D) g;
-		
+
 		// Draw each of our stimuli
 		for(Stimulus stimulus : stimList) {
 			stimulus.draw(g2d);
 		}
 	}
-	
+
 	protected void processSelectionEvent(Stimulus selectedStim, boolean correct, long responseTime) {
 
 		// Determine which distractor the participant clicked on; record it
 		activeTrial.setLineupStimulus(selectedStim);
 		activeTrial.setLineupClickCorrect(correct);
 		activeTrial.setLineupClickRT(responseTime);
-		
+
 		owner.switchContext(nextScreen);
 	}
-	
+
 	private class LineupMouseListener implements MouseListener {
 		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseClicked(MouseEvent e) {
-			
+
 			int x = e.getX(), y = e.getY();
 
 			Stimulus selectedStimulus = null;
 			boolean clickCorrect = false;
-			
+
 			// Which object did I click, if any?
 			for(Stimulus candidate : stimList) {
-				
+
 				// If we click inside the bounding box of a stimulus, record this
 				// and break immediately (does not handle overlapping bounding boxes)
 				if( candidate.getShape().getBounds().contains(x,y) ) {
 					selectedStimulus = candidate;
-					
+
 					// Shallow equality okay since we're comparing the same pointer
 					//if(selectedStimulus.getName() == stimTarget.getName()) {
 					if(selectedStimulus.isEquivalent( stimTarget )) {
@@ -250,18 +254,18 @@ public class LineupScreen extends Screen {
 					break;
 				}
 			}
-			
+
 			// User didn't select a stimulus at all
 			if(selectedStimulus == null) {
 				Util.dPrintln("User clicked <" + x + ", " + y + ">, which was not a valid stimulus.");
 				return;
 			}
-			
+
 			long responseTime = System.currentTimeMillis() - initializationTime;
 			Util.dPrintln("User " + (clickCorrect ? "correctly" : "incorrectly") + " selected stimulus " + selectedStimulus.toString() + " after " + responseTime + " ms.");
-		
+
 			processSelectionEvent(selectedStimulus, clickCorrect, responseTime);
-			
+
 		}
 
 		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
@@ -276,13 +280,13 @@ public class LineupScreen extends Screen {
 		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseReleased(MouseEvent arg0) {}
 	}
-	
+
 	@Override
 	protected void tearDown() {
-		
+
 		// Remove all the distractors; we want a different
 		// random lineup the next time around
-		
+
 	}
 
 }

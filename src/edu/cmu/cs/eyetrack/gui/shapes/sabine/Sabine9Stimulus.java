@@ -12,7 +12,7 @@ public class Sabine9Stimulus extends Stimulus {
 
 	public Sabine9Stimulus(String name, Color color, int width, int height) {
 
-		super(name, color, width, height);
+		super(name, color, width, height, color);
 
 		polygon = new Polygon();
 		polygon.addPoint(0, (int) (bevelFrac*height));

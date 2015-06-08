@@ -11,7 +11,7 @@ public class Sabine1Stimulus extends Stimulus {
 	private static double sideCurveFrac = topCurveFrac;
 
 	public Sabine1Stimulus(String name, Color color, int width, int height) {
-		super(name, color, width, height);
+		super(name, color, width, height, color);
 		makeShape(0,0);
 	}
 

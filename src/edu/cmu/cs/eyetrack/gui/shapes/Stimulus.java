@@ -24,12 +24,17 @@ public abstract class Stimulus {
 	protected Animator animator;
 	
 	public static enum StimulusClass { CMU, UCOLORADO };
-	
-	public Stimulus(String name, Color color, int width, int height) {
+
+	public Stimulus(String name, Color color, int width, int height, Color borderColor) {
 		this.name = name;
 		this.color = color;
 		this.width = width;
 		this.height = height;
+		this.borderColor = borderColor;
+	}
+
+	public Stimulus(String name, Color color, int width, int height) {
+		this(name, color, width, height, Color.BLACK);
 	}
 	
 	public Shape getShape() {

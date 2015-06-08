@@ -14,7 +14,7 @@ public class Sabine10Stimulus extends Stimulus {
 	
 	public Sabine10Stimulus(String name, Color color, int width, int height) {
 
-		super(name, color, width, height);
+		super(name, color, width, height, color);
 
 		polygon = new Polygon();
 		polygon.addPoint((int) (0.5*width), (int) ((1-horizontalSqueezeFrac) * height));
