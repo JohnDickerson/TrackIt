@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import edu.cmu.cs.eyetrack.gui.shapes.Stimulus.StimulusClass;
 import edu.cmu.cs.eyetrack.helper.Util;
 import edu.cmu.cs.eyetrack.io.ResourceLoader;
 import edu.cmu.cs.eyetrack.io.TestRecord;
@@ -55,7 +56,7 @@ public class EyeTrack extends JFrame {
 		// are in the trials, settings, et cetera)
 		gameState = new GameState();
 		// Create and register target types and colors
-		gameState.registerStimuli();
+		gameState.registerStimuli(StimulusClass.CMU);
 				
 		// Add shells for each of the separate screens; we'll need a central
 		// body to facilitate communication between the various parts.

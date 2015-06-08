@@ -9,6 +9,7 @@ import java.util.List;
 import org.joda.time.Period;
 
 import edu.cmu.cs.eyetrack.gui.shapes.Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.Stimulus.StimulusClass;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory.StimulusType;
 import edu.cmu.cs.eyetrack.helper.Util;
@@ -67,6 +68,7 @@ public class Settings implements CSVWritable {
 				"Uses Fullscreen",
 				"Motion Constraint Type",
 				"Motion Interpolation Type",
+				"Stimulus Type",
 		};
 	}
 
@@ -100,6 +102,7 @@ public class Settings implements CSVWritable {
 				String.valueOf(experiment.getUsesFullscreen()),
 				String.valueOf(experiment.getMotionConstraintType()),
 				String.valueOf(experiment.getMotionInterpolationType()),
+				String.valueOf(experiment.getStimulusClass()),
 		});
 
 		return data;
@@ -130,14 +133,16 @@ public class Settings implements CSVWritable {
 		private boolean usesFullscreen;
 		private MotionConstraintType motionConstraintType;
 		private MotionInterpolationType motionInterpolationType;
+		private StimulusClass stimulusClass;
 		
-		public Experiment(int numDistractors, double objectSpeed, TrialType trialType, int trialCount, double trialLength, boolean usesRandomTarget, Stimulus canonicalTarget, double fps, long seed, int gridXSize, int gridYSize, int pixelWidth, int pixelHeight, int insetX, int insetY, boolean usesBGImages, String bgImageDirectory, MemoryCheckType memCheckType, boolean usesFullscreen, MotionConstraintType motionConstraintType, MotionInterpolationType motionInterpolationType) {
+		public Experiment(int numDistractors, double objectSpeed, TrialType trialType, int trialCount, double trialLength, boolean usesRandomTarget, StimulusClass stimulusClass, Stimulus canonicalTarget, double fps, long seed, int gridXSize, int gridYSize, int pixelWidth, int pixelHeight, int insetX, int insetY, boolean usesBGImages, String bgImageDirectory, MemoryCheckType memCheckType, boolean usesFullscreen, MotionConstraintType motionConstraintType, MotionInterpolationType motionInterpolationType) {
 			this.numDistractors = numDistractors;
 			this.objectSpeed = objectSpeed;
 			this.trialType = trialType;
 			this.trialCount = trialCount;
 			this.trialLength = trialLength;
 			this.usesRandomTarget = usesRandomTarget;
+			this.stimulusClass = stimulusClass;
 			this.canonicalTarget = canonicalTarget;
 			this.fps = fps;
 			this.seed = seed;
@@ -245,6 +250,11 @@ public class Settings implements CSVWritable {
 		public Stimulus getCanonicalTarget() {
 			return StimulusFactory.getInstance().getRegisteredExample(StimulusType.TARGET, canonicalTarget);
 		}
+
+		public StimulusClass getStimulusClass() {
+			return stimulusClass;
+		}
+		
 	}
 
 	// Data regarding the human tester
@@ -287,6 +297,8 @@ public class Settings implements CSVWritable {
 		public int getAge() {
 			return new Period(birthdate.getTime(), testDate.getTime()).getYears();
 		}
+		
+		
 	}
 
 

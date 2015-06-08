@@ -1,11 +1,15 @@
 package edu.cmu.cs.eyetrack.gui.shapes;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 
+import javax.swing.JFrame;
+
 import org.jdesktop.core.animation.timing.Animator;
 
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine2Stimulus;
 import edu.cmu.cs.eyetrack.helper.Coordinate;
 
 public abstract class Stimulus {
@@ -18,6 +22,8 @@ public abstract class Stimulus {
 	protected int width, height;
 	
 	protected Animator animator;
+	
+	public static enum StimulusClass { CMU, UCOLORADO };
 	
 	public Stimulus(String name, Color color, int width, int height) {
 		this.name = name;
@@ -83,5 +89,20 @@ public abstract class Stimulus {
 	public void setAnimator(Animator animator) {
 		this.animator = animator;
 	}
-	
+
+	public static void main(String args[]) {
+		//final Stimulus stimulus = new Sabine1Stimulus("Sabine 1", Color.BLACK, 300, 300);
+		final Stimulus stimulus = new Sabine2Stimulus("Sabine 2", Color.BLACK, 300, 300);
+		JFrame frame = new JFrame() {
+			private static final long serialVersionUID = 1L;
+			public void paint(Graphics g) {
+				stimulus.draw((Graphics2D) g);
+			}
+		};
+		frame.setSize(400, 400);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		//stimulus.move(50, 50);
+	}
 }

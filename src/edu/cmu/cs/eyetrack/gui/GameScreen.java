@@ -232,7 +232,7 @@ public class GameScreen extends Screen {
 			
 			// Register real stimuli
 			
-			owner.getGameState().registerStimuli(blockWidth, blockHeight);
+			owner.getGameState().registerStimuli(blockWidth, blockHeight, settings.getExperiment().getStimulusClass());
 			
 			// Compute the ending location for the target (across all trials)
 			stimTargetEndingPos = owner.getGameState().getRandomGen().getRandomEndPositions(
