@@ -11,7 +11,6 @@ import java.util.Vector;
 import au.com.bytecode.opencsv.CSVWriter;
 import edu.cmu.cs.eyetrack.analysis.io.Loader;
 import edu.cmu.cs.eyetrack.analysis.score.FixationPointScorer;
-import edu.cmu.cs.eyetrack.analysis.score.PointByPointScorer;
 import edu.cmu.cs.eyetrack.analysis.score.Scorer;
 import edu.cmu.cs.eyetrack.analysis.score.compare.DeltaOffsetPointComparator;
 import edu.cmu.cs.eyetrack.analysis.score.compare.PointComparator;
@@ -40,9 +39,9 @@ public class AnalysisTester {
 			Util.dPrintln("Detected Mac OS X as operating system");
 		} else {
 			//subjRootDir = "/home/spook/sideprojects/TrackIt/experiments/feb2012/";
-			//subjRootDir = "/usr0/home/jpdicker/Dropbox/organized_DirectTrackIt Files";
+			subjRootDir = "/usr0/home/jpdicker/Dropbox/organized_DirectTrackIt Files";
 			//subjRootDir = "/usr0/home/jpdicker/Dropbox/Gold Standard";
-			subjRootDir = "/usr0/home/jpdicker/Dropbox/Moving Eyes 2012-2013 New Numbers";
+			//subjRootDir = "/usr0/home/jpdicker/Dropbox/Moving Eyes 2012-2013 New Numbers";
 			//subjRootDir = "/usr0/home/jpdicker/code/TrackIt/sample/sample_data_August_2013";
 			Util.dPrintln("Detected *nix-based operating system");
 		}
