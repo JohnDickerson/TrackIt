@@ -8,8 +8,8 @@ import edu.cmu.cs.eyetrack.gui.shapes.Stimulus;
 public class Sabine10Stimulus extends Stimulus {
 	
 	private Polygon polygon;
-	private static double bevelFrac = 0.2;
-	private static double horizontalSqueezeFrac = 0.10;
+	private static double bevelFrac = 0.35;
+	private static double horizontalSqueezeFrac = 0.50;
 	
 	
 	public Sabine10Stimulus(String name, Color color, int width, int height) {
@@ -17,12 +17,12 @@ public class Sabine10Stimulus extends Stimulus {
 		super(name, color, width, height, color);
 
 		polygon = new Polygon();
-		polygon.addPoint((int) (0.5*width), (int) ((1-horizontalSqueezeFrac) * height));
-		polygon.addPoint(width, (int) ((1-bevelFrac) * height));
-		polygon.addPoint(width, (int) (bevelFrac * height));
-		polygon.addPoint((int) (0.5*width), (int) (horizontalSqueezeFrac * height));
-		polygon.addPoint(0, (int) (bevelFrac * height));
-		polygon.addPoint(0, (int) ((1-bevelFrac) * height));
+		polygon.addPoint((int) (0.5*width), (int) ( (-2.0*horizontalSqueezeFrac + 1) * height));
+		polygon.addPoint(width, (int) ((-2.0*horizontalSqueezeFrac + 1-bevelFrac) * height));
+		polygon.addPoint(width, (int) ((-2.0*horizontalSqueezeFrac+bevelFrac) * height));
+		polygon.addPoint((int) (0.5*width), (int) ((-2.0*horizontalSqueezeFrac) * height));
+		polygon.addPoint(0, (int) ((-2.0*horizontalSqueezeFrac + bevelFrac) * height));
+		polygon.addPoint(0, (int) ((-2.0*horizontalSqueezeFrac + (1-bevelFrac)) * height));
 		
 		shape = polygon;
 	}
