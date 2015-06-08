@@ -27,6 +27,7 @@ public class TestRecord {
 			return;
 		}
 		
+		@SuppressWarnings("resource")
 		CSVWriter writer = new CSVWriter(state.getIO(), ',');
 		
 		while(state.hasMoreToWrite()) {

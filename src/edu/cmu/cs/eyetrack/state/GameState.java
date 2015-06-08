@@ -22,11 +22,16 @@ import edu.cmu.cs.eyetrack.gui.shapes.Stimulus.StimulusClass;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory.StimulusType;
 import edu.cmu.cs.eyetrack.gui.shapes.TriangleStimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine10Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine1Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine2Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine3Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine4Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine5Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine6Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine7Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine8Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine9Stimulus;
 import edu.cmu.cs.eyetrack.helper.Util;
 import edu.cmu.cs.eyetrack.io.TestRecord;
 
@@ -108,7 +113,11 @@ public class GameState {
 			StimulusFactory.getInstance().registerStimulus(new Sabine3Stimulus("Stimulus 3", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
 			StimulusFactory.getInstance().registerStimulus(new Sabine4Stimulus("Stimulus 4", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);	
 			StimulusFactory.getInstance().registerStimulus(new Sabine5Stimulus("Stimulus 5", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);	
-			
+			StimulusFactory.getInstance().registerStimulus(new Sabine6Stimulus("Stimulus 6", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);	
+			StimulusFactory.getInstance().registerStimulus(new Sabine7Stimulus("Stimulus 7", stimColors.get(colorIdx++),  (int) minBlockDim), StimulusType.BOTH);	
+			StimulusFactory.getInstance().registerStimulus(new Sabine8Stimulus("Stimulus 8", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);	
+			StimulusFactory.getInstance().registerStimulus(new Sabine9Stimulus("Stimulus 9", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);	
+			StimulusFactory.getInstance().registerStimulus(new Sabine10Stimulus("Stimulus 10", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);	
 			break;
 		default:
 			throw new IllegalArgumentException("Cannot understand StimulusClass type " + stimulusClass);
