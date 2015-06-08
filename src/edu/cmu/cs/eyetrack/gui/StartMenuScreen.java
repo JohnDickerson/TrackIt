@@ -82,7 +82,7 @@ public class StartMenuScreen extends Screen {
 	private JDateChooser datBirthdate, datTestDate;
 	private JComboBox cbxGender, cbxTrialType, cbxTargetType, cbxTargetColor;
 	private JSpinner spnDistractors, spnTrialCount, spnObjectSpeed, spnMinTrialLength, spnFramesPerSecond, spnSeed, spnGridXSize, spnGridYSize;
-	private JCheckBox chkRandomTarget, chkUseBackgroundImages, chkUseFullscreen;
+	private JCheckBox chkRandomTarget, chkRandomWithReplacement, chkUseBackgroundImages, chkUseFullscreen;
 	private JRadioButton rdoMemCheckNone, rdoMemCheck2x2, rdoMemCheckNxN, rdoMotionPixel, rdoMotionGrid, rdoMotionLinear, rdoMotionRandom, rdoShapeTypeCMU, rdoShapeTypeUColorado;
 
 	public StartMenuScreen(EyeTrack owner, PanelID nextScreen) {
@@ -206,9 +206,21 @@ public class StartMenuScreen extends Screen {
 				lblTargetType.setEnabled(!chkRandomTarget.isSelected());
 				cbxTargetColor.setEnabled(!chkRandomTarget.isSelected() && !rdoShapeTypeUColorado.isSelected());
 				lblTargetColor.setEnabled(!chkRandomTarget.isSelected() && !rdoShapeTypeUColorado.isSelected());
+				chkRandomWithReplacement.setEnabled(chkRandomTarget.isSelected());
+				sanitizeNumTrials();
 			}
 		});
 		lblRandomTarget.setLabelFor(chkRandomTarget);
+		
+		// If we're doing random target, sample with or without replacement?
+		chkRandomWithReplacement = new JCheckBox("Replace?");
+		chkRandomWithReplacement.setSelected( true );
+		chkRandomWithReplacement.addItemListener(new ItemListener() {
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
+			public void itemStateChanged(ItemEvent e) {
+				sanitizeNumTrials();
+			}
+		});
 
 		// Use either the original CMU shapes or the new ones from Sabine
 		final JLabel lblShapeType = new JLabel(
@@ -443,10 +455,12 @@ public class StartMenuScreen extends Screen {
 		trialDataPanel.add(lblTrialCount); trialDataPanel.add(spnTrialCount); numRows++;
 		if(Util.CMU_ONLY) {
 			trialDataPanel.add(new JPanel(new GridLayout(0,1)){{
-				add(lblRandomTarget); add(lblShapeType);
+				add(lblRandomTarget); add(lblShapeType); 
 			}}); 
 			trialDataPanel.add(new JPanel(new GridLayout(0,1)){{
-				add(chkRandomTarget);
+				add(new JPanel(new GridLayout(1,0)) {{ 
+					add(chkRandomTarget); add(chkRandomWithReplacement);
+				}});
 				add(new JPanel(new GridLayout(1,0)){{ add(rdoShapeTypeCMU); add(rdoShapeTypeUColorado);}});
 			}}); 
 			numRows++;
@@ -544,6 +558,20 @@ public class StartMenuScreen extends Screen {
 		model.setMaximum(newMax);
 
 		if( Integer.valueOf(spnDistractors.getValue().toString()) > newMax ) {
+			model.setValue(newMax);
+		}
+	}
+	
+	private void sanitizeNumTrials() {
+		
+		// Maximum number of trials is infinite if we're sampling random targets with replacement,
+		// but it's only |# Stimulus| if we're sampling with replacement		
+		Integer newMax = (chkRandomTarget.isSelected() && !chkRandomWithReplacement.isSelected()) ? cbxTargetType.getItemCount() : null;
+				
+		SpinnerNumberModel model = (SpinnerNumberModel) spnTrialCount.getModel();
+		model.setMaximum(newMax);
+		
+		if( null != newMax && Integer.valueOf(spnTrialCount.getValue().toString()) > newMax ) {
 			model.setValue(newMax);
 		}
 	}
@@ -663,6 +691,7 @@ public class StartMenuScreen extends Screen {
 			int trialCount = Integer.valueOf(spnTrialCount.getValue().toString());
 			double trialLength = Double.valueOf(spnMinTrialLength.getValue().toString());
 			boolean usesRandomTarget = chkRandomTarget.isSelected();
+			boolean usesSamplingWithReplacement = chkRandomWithReplacement.isSelected();
 			Stimulus specificTargetType = StimulusFactory.getInstance().getAllOfType(StimulusType.TARGET).get( cbxTargetType.getSelectedItem().toString() );
 			Color specificTargetColor = (Color) cbxTargetColor.getSelectedItem();
 			double fps = Double.valueOf(spnFramesPerSecond.getValue().toString());
@@ -761,7 +790,7 @@ public class StartMenuScreen extends Screen {
 			// parameters and experimental setup
 			Settings settings = new Settings();
 			settings.setUser(settings.new User(name, gender, birthdate, testDate, testLocation));	
-			settings.setExperiment(settings.new Experiment(numDistractors, objectSpeed, trialType, trialCount, trialLength, usesRandomTarget, stimulusClass, canonicalTarget, fps, seed, gridX, gridY, pixelWidth, pixelHeight, (int) insetX, (int) insetY, usesBackgroundImages, backgroundImageDirectory, memCheckType, usesFullscreen, motionConstraintType, motionInterpolationType));
+			settings.setExperiment(settings.new Experiment(numDistractors, objectSpeed, trialType, trialCount, trialLength, usesRandomTarget, usesSamplingWithReplacement, stimulusClass, canonicalTarget, fps, seed, gridX, gridY, pixelWidth, pixelHeight, (int) insetX, (int) insetY, usesBackgroundImages, backgroundImageDirectory, memCheckType, usesFullscreen, motionConstraintType, motionInterpolationType));
 
 			// Alert the greater game state to our initialization parameters
 			GameState gameState = owner.getGameState();

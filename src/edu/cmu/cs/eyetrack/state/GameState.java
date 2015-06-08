@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 
@@ -18,6 +20,7 @@ import edu.cmu.cs.eyetrack.gui.shapes.DiamondStimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.HeartStimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.OctagonStimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.StarStimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.Stimulus.StimulusClass;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory.StimulusType;
@@ -46,6 +49,9 @@ public class GameState {
 	private Trial activeTrial;
 
 	private ArrayList<ImageIcon> backgroundImages;
+	
+	// Keeps track of the set of Target stimuli we've used
+	private Set<Stimulus> previousStimTargets;
 
 	// Maintain a single Random instance, always draw from this;
 	// given a unique seed, should be able to reproduce experiment exactly
@@ -56,6 +62,7 @@ public class GameState {
 
 	public GameState() {
 		outputBuffer = new LinkedList<String[]>();
+		previousStimTargets = new HashSet<Stimulus>();
 	}
 
 	public void registerStimuli(int blockWidth, int blockHeight, StimulusClass stimulusClass) {
@@ -223,4 +230,7 @@ public class GameState {
 		this.currentTrialCount++;
 	}
 
+	public Set<Stimulus> getPreviousStimTargets() {
+		return previousStimTargets;
+	}
 }

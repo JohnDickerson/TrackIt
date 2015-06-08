@@ -9,16 +9,18 @@ public class Sabine10Stimulus extends Stimulus {
 	
 	private Polygon polygon;
 	private static double bevelFrac = 0.2;
-
+	private static double horizontalSqueezeFrac = 0.10;
+	
+	
 	public Sabine10Stimulus(String name, Color color, int width, int height) {
 
 		super(name, color, width, height);
 
 		polygon = new Polygon();
-		polygon.addPoint((int) (0.5*width), height);
+		polygon.addPoint((int) (0.5*width), (int) ((1-horizontalSqueezeFrac) * height));
 		polygon.addPoint(width, (int) ((1-bevelFrac) * height));
 		polygon.addPoint(width, (int) (bevelFrac * height));
-		polygon.addPoint((int) (0.5*width), 0);
+		polygon.addPoint((int) (0.5*width), (int) (horizontalSqueezeFrac * height));
 		polygon.addPoint(0, (int) (bevelFrac * height));
 		polygon.addPoint(0, (int) ((1-bevelFrac) * height));
 		

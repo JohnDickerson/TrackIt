@@ -8,7 +8,7 @@ import edu.cmu.cs.eyetrack.gui.shapes.Stimulus;
 public class Sabine4Stimulus extends Stimulus {
 
 	private static double sideCurveFrac = 0.6;
-
+	private static double middlePointFrac = 0.4;
 	public Sabine4Stimulus(String name, Color color, int width, int height) {
 		super(name, color, width, height);
 		makeShape(0,0);
@@ -20,9 +20,9 @@ public class Sabine4Stimulus extends Stimulus {
 		s.moveTo(x+width, y);
 		s.lineTo(x+(int)(width * (1-sideCurveFrac)), y);
 		s.curveTo(x, y, 
-				x, y+(0.5*height),
-				x+(width * (0.5*sideCurveFrac)), y+(0.5*height));
-		s.curveTo(x, y+(0.5*height), 
+				x, y+(middlePointFrac*height),
+				x+(width * (0.25*sideCurveFrac)), y+(middlePointFrac*height));
+		s.curveTo(x, y+((1-middlePointFrac)*height), 
 				x, y+height,
 				x+(int)(width*(1-sideCurveFrac)), y+height);
 

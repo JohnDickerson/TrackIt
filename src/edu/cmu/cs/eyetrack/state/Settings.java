@@ -69,6 +69,7 @@ public class Settings implements CSVWritable {
 				"Motion Constraint Type",
 				"Motion Interpolation Type",
 				"Stimulus Type",
+				"Sampling with Replacement",
 		};
 	}
 
@@ -103,6 +104,7 @@ public class Settings implements CSVWritable {
 				String.valueOf(experiment.getMotionConstraintType()),
 				String.valueOf(experiment.getMotionInterpolationType()),
 				String.valueOf(experiment.getStimulusClass()),
+				String.valueOf(experiment.getUsesRandomWithReplacement()),
 		});
 
 		return data;
@@ -118,6 +120,7 @@ public class Settings implements CSVWritable {
 		private int trialCount;
 		private double trialLength;
 		private boolean usesRandomTarget;
+		private boolean usesRandomWithReplacement;
 		private Stimulus canonicalTarget;
 		private double fps;
 		private long seed;
@@ -135,13 +138,14 @@ public class Settings implements CSVWritable {
 		private MotionInterpolationType motionInterpolationType;
 		private StimulusClass stimulusClass;
 		
-		public Experiment(int numDistractors, double objectSpeed, TrialType trialType, int trialCount, double trialLength, boolean usesRandomTarget, StimulusClass stimulusClass, Stimulus canonicalTarget, double fps, long seed, int gridXSize, int gridYSize, int pixelWidth, int pixelHeight, int insetX, int insetY, boolean usesBGImages, String bgImageDirectory, MemoryCheckType memCheckType, boolean usesFullscreen, MotionConstraintType motionConstraintType, MotionInterpolationType motionInterpolationType) {
+		public Experiment(int numDistractors, double objectSpeed, TrialType trialType, int trialCount, double trialLength, boolean usesRandomTarget, boolean usesRandomWithReplacement, StimulusClass stimulusClass, Stimulus canonicalTarget, double fps, long seed, int gridXSize, int gridYSize, int pixelWidth, int pixelHeight, int insetX, int insetY, boolean usesBGImages, String bgImageDirectory, MemoryCheckType memCheckType, boolean usesFullscreen, MotionConstraintType motionConstraintType, MotionInterpolationType motionInterpolationType) {
 			this.numDistractors = numDistractors;
 			this.objectSpeed = objectSpeed;
 			this.trialType = trialType;
 			this.trialCount = trialCount;
 			this.trialLength = trialLength;
 			this.usesRandomTarget = usesRandomTarget;
+			this.usesRandomWithReplacement = usesRandomWithReplacement;
 			this.stimulusClass = stimulusClass;
 			this.canonicalTarget = canonicalTarget;
 			this.fps = fps;
@@ -253,6 +257,10 @@ public class Settings implements CSVWritable {
 
 		public StimulusClass getStimulusClass() {
 			return stimulusClass;
+		}
+
+		public boolean getUsesRandomWithReplacement() {
+			return usesRandomWithReplacement;
 		}
 		
 	}

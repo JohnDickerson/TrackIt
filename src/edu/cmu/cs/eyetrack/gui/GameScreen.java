@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.ImageIcon;
@@ -264,11 +265,31 @@ public class GameScreen extends Screen {
 		int colorIdx=0;
 		//trial.setStimColors(stimColors);
 		
+		Set<Stimulus> previousStimTargets = owner.getGameState().getPreviousStimTargets();
+		
 		// Create the target, place it first---we have the requirement
 		// that the ENDING grid position of the target must be uniformly
 		// distributed across all grid positions, as well as the BEGINNING position
 		if(owner.getGameState().getSettings().getExperiment().getUsesRandomTarget()) {
-			stimTarget = StimulusFactory.getInstance().create(StimulusType.TARGET, stimColors.get(colorIdx++));
+			// If we're sampling without replacement, make sure we sample a new target; otherwise,
+			// just sample any target from StimulusType.TARGET
+			if(!owner.getGameState().getSettings().getExperiment().getUsesRandomWithReplacement()) {
+				boolean legalStimTarget = true;
+				do {
+					stimTarget = StimulusFactory.getInstance().create(StimulusType.TARGET, stimColors.get(colorIdx));
+					legalStimTarget = true;
+					// Make sure we haven't sampled this target before
+					for(Stimulus previousStimTarget : previousStimTargets) {
+						if(previousStimTarget.isEquivalent(stimTarget)) { 
+							legalStimTarget = false;
+							break;
+						}
+					}
+				} while(!legalStimTarget);
+				colorIdx++;
+			} else {
+				stimTarget = StimulusFactory.getInstance().create(StimulusType.TARGET, stimColors.get(colorIdx++));
+			}
 		} else {
 			stimTarget = owner.getGameState().getSettings().getExperiment().getCanonicalTarget().factoryClone();
 			
@@ -282,6 +303,7 @@ public class GameScreen extends Screen {
 				}
 			}
 		}
+		previousStimTargets.add(stimTarget);
 		
 		// Create #distractors Distractors, according to user's preferences
 		TrialType trialType = owner.getGameState().getSettings().getExperiment().getTrialType();
