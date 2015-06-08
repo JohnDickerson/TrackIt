@@ -25,6 +25,8 @@ Note that you can download and run the Track-It .jar file available on the proje
 Related Research
 ================
 
-*   *Assessing selective sustained attention in 3- to 5-year-old children: Evidence from a new paradigm*.  2012.  Anna Fisher, Erik Thiessen, Karrie Godwin, Heidi Kloos, John P. Dickerson.  *Journal of Experimental Child Psychology* **113**.  [PubMed link.](http://www.ncbi.nlm.nih.gov/pubmed/23022318)
+*   *Endogenously and exogenously driven selective sustained attention: Contributions to learning in kindergarten children*.  2015.  Lucy C. Erickson, Erik D. Thiessen, Karrie E. Godwin, John P. Dickerson, Anna V. Fisher.  *Journal of Experimental Child Psychology* **138**.  [Elsevier link.](http://www.sciencedirect.com/science/article/pii/S0022096515001101)  *Earlier versions appeared at CogSci-2014 and SRCD-2015.*
+
+*   *Assessing selective sustained attention in 3- to 5-year-old children: Evidence from a new paradigm*.  2013.  Anna Fisher, Erik Thiessen, Karrie Godwin, Heidi Kloos, John P. Dickerson.  *Journal of Experimental Child Psychology* **113**.  [PubMed link.](http://www.ncbi.nlm.nih.gov/pubmed/23022318)
 
 *   *Eyes as the windows of cognition: The Track-It paradigm and selective attention*.  2012.  Erik Thiessen, John P. Dickerson, Lucy Erickson, Anna Fisher.  *SRCD Themed Meeting on Developmental Methodology*.

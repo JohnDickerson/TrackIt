@@ -25,6 +25,8 @@ import edu.cmu.cs.eyetrack.gui.shapes.TriangleStimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine1Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine2Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine3Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine4Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine5Stimulus;
 import edu.cmu.cs.eyetrack.helper.Util;
 import edu.cmu.cs.eyetrack.io.TestRecord;
 
@@ -104,6 +106,9 @@ public class GameState {
 			StimulusFactory.getInstance().registerStimulus(new Sabine1Stimulus("Stimulus 1", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
 			StimulusFactory.getInstance().registerStimulus(new Sabine2Stimulus("Stimulus 2", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
 			StimulusFactory.getInstance().registerStimulus(new Sabine3Stimulus("Stimulus 3", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
+			StimulusFactory.getInstance().registerStimulus(new Sabine4Stimulus("Stimulus 4", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);	
+			StimulusFactory.getInstance().registerStimulus(new Sabine5Stimulus("Stimulus 5", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);	
+			
 			break;
 		default:
 			throw new IllegalArgumentException("Cannot understand StimulusClass type " + stimulusClass);
