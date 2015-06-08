@@ -157,9 +157,10 @@ public class StartMenuScreen extends Screen {
 		lblTrialCount.setLabelFor(spnTrialCount);
 
 		// Do we want a random target type/color per trial, or user-set? 
-		// Need a different model for CMU, UColorado's shapes (assumes same colors for now)
+		// Need a different model for CMU, UColorado's shapes 
 		final Map<Stimulus.StimulusClass, ComboBoxModel> nameModels = new HashMap<Stimulus.StimulusClass, ComboBoxModel>();
-		
+		final Map<Stimulus.StimulusClass, ComboBoxModel> colorModels = new HashMap<Stimulus.StimulusClass, ComboBoxModel>();
+
 		GameState gameState = owner.getGameState();
 		for(Stimulus.StimulusClass stimulusClass : Arrays.asList( Stimulus.StimulusClass.values() )) {
 			// Load this subset of shapes and colors
@@ -171,16 +172,23 @@ public class StartMenuScreen extends Screen {
 			nameMap.keySet().toArray(targetTypes);
 			ComboBoxModel cbxModel = new DefaultComboBoxModel(targetTypes);
 			nameModels.put(stimulusClass, cbxModel);
+
+			// Make a model for the JComboBoxes based on colors (Gray for UC, rainbow for CMU)
+			if(stimulusClass.equals(StimulusClass.UCOLORADO)) {
+				colorModels.put(stimulusClass, new DefaultComboBoxModel(new Color[] { Color.gray } ));
+			} else {
+				Color[] targetColors = new Color[RandomGen.getColorList().size()];
+				RandomGen.getColorList().toArray(targetColors);
+				colorModels.put(stimulusClass, new DefaultComboBoxModel(targetColors));
+			}
 		}
-		Color[] targetColors = new Color[RandomGen.getColorList().size()];
-		RandomGen.getColorList().toArray(targetColors);
-		
+
 		final JLabel lblTargetType = new JLabel("Type:", JLabel.TRAILING);
 		cbxTargetType = new JComboBox( nameModels.get(Stimulus.StimulusClass.CMU) );
 		cbxTargetType.setSelectedIndex((new Random()).nextInt(cbxTargetType.getItemCount()));
 		final JLabel lblTargetColor = new JLabel("Color:", JLabel.TRAILING);
-		cbxTargetColor = new JComboBox(targetColors);
-		cbxTargetColor.setSelectedIndex((new Random()).nextInt(targetColors.length));
+		cbxTargetColor = new JComboBox(colorModels.get(Stimulus.StimulusClass.CMU));
+		cbxTargetColor.setSelectedIndex((new Random()).nextInt(cbxTargetColor.getItemCount()));
 		cbxTargetColor.setRenderer(new ColorCellRenderer());
 
 		boolean targetEnabled = false; //Util.CMU_ONLY;
@@ -218,6 +226,7 @@ public class StartMenuScreen extends Screen {
 			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void itemStateChanged(ItemEvent e) {
 				cbxTargetType.setModel( nameModels.get(Stimulus.StimulusClass.CMU) );
+				cbxTargetColor.setModel( colorModels.get(Stimulus.StimulusClass.CMU) );
 				if(chkRandomTarget.isSelected()) {
 					cbxTargetType.setSelectedIndex((new Random()).nextInt(cbxTargetType.getItemCount()));
 				}
@@ -229,6 +238,7 @@ public class StartMenuScreen extends Screen {
 			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void itemStateChanged(ItemEvent e) {
 				cbxTargetType.setModel( nameModels.get(Stimulus.StimulusClass.UCOLORADO) );
+				cbxTargetColor.setModel( colorModels.get(Stimulus.StimulusClass.UCOLORADO) );
 				if(chkRandomTarget.isSelected()) {
 					cbxTargetType.setSelectedIndex((new Random()).nextInt(cbxTargetType.getItemCount()));
 				}
@@ -633,8 +643,8 @@ public class StartMenuScreen extends Screen {
 			StimulusClass stimulusClass = rdoShapeTypeCMU.isSelected() ? Stimulus.StimulusClass.CMU : Stimulus.StimulusClass.UCOLORADO;
 			StimulusFactory.getInstance().reset();
 			owner.getGameState().registerStimuli(stimulusClass);
-			
-			
+
+
 			Dimension trialDim = owner.getSize();
 			double insetX = 0;
 			double insetY = 0;
