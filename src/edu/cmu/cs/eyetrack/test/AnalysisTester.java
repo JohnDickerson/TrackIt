@@ -35,7 +35,8 @@ public class AnalysisTester {
 			subjRootDir = "C:\\sideprojects\\TrackIt\\experiments\\feb2012\\";
 			Util.dPrintln("Detected Windows-based operating system");
 		} else if(isMacOsX) {
-			subjRootDir = "/Users/spook/code/TrackIt/sample/sample_data_August_2013";
+			//subjRootDir = "/Users/spook/code/TrackIt/sample/sample_data_August_2013";
+			subjRootDir = "/Users/spook/sideprojects/TrackIt/experiments/2014_07_data/2013-2014_participants";
 			Util.dPrintln("Detected Mac OS X as operating system");
 		} else {
 			//subjRootDir = "/home/spook/sideprojects/TrackIt/experiments/feb2012/";

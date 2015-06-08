@@ -16,7 +16,6 @@ public class BoxStimulus extends Stimulus {
 		polygon.addPoint(width,0);
 		polygon.addPoint(width,width);
 		polygon.addPoint(0,width);
-		
 		shape = polygon;
 	}
 

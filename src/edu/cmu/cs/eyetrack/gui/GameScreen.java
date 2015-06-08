@@ -7,12 +7,14 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Shape;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -115,6 +117,23 @@ public class GameScreen extends Screen {
 		}
 	}
 
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public static boolean enableOSXFullscreen(Window window) {
+	    if(null == window) { return false; }
+		try {
+	        Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
+	        Class params[] = new Class[]{Window.class, Boolean.TYPE};
+	        Method method = util.getMethod("setWindowCanFullScreen", params);
+	        method.invoke(util, window, true);
+	        return true;
+	    } catch (ClassNotFoundException e1) {
+	      	Util.dPrintln("OS X 10.7+ fullscreen API not supported or failed.");
+	    } catch (Exception e) {
+	    	Util.dPrintln("OS X 10.7+ fullscreen API not supported or failed.");
+	    }
+		return false;
+	}
+	
 	@Override
 	protected void initialize() {
 
@@ -132,9 +151,16 @@ public class GameScreen extends Screen {
 			// Kill the titlebar and fullscreen for the experiment
 			if( experiment.getUsesFullscreen() ) {
 				Util.dPrintln("Attempting to switch to fullscreen mode for trials.");
-				if( GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported() ) {
+				boolean keepTrying = true;
+				if(Util.isRunningOnMacOSX()) {
+					Util.dPrintln("Attempting Mac OS X native fullscreen API.");
+					keepTrying = !GameScreen.enableOSXFullscreen(owner);
+				}
+				if(keepTrying && GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported() ) {
 					GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(owner);
 					experiment.updateInsets(owner.getSize());
+				} else {
+					Util.dPrintln("getDefaultScreenDevice().isFullScreenSupported() returned False; cannot use fullscreen mode.");
 				}
 			}
 
@@ -206,7 +232,7 @@ public class GameScreen extends Screen {
 			
 			// Register real stimuli
 			
-			owner.getGameState().registerStimuli(blockWidth, blockHeight);
+			owner.getGameState().registerStimuli(blockWidth, blockHeight, settings.getExperiment().getStimulusClass());
 			
 			// Compute the ending location for the target (across all trials)
 			stimTargetEndingPos = owner.getGameState().getRandomGen().getRandomEndPositions(
@@ -444,7 +470,7 @@ public class GameScreen extends Screen {
 	
 	class GridBoxMouseListener implements MouseListener {
 
-		@Override 
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5 
 		public void mouseClicked(MouseEvent e) {
 
 			// If the animation is done and we are waiting for the participant to select
@@ -454,23 +480,23 @@ public class GameScreen extends Screen {
 			}
 		}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseEntered(MouseEvent e) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseExited(MouseEvent e) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mousePressed(MouseEvent e) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseReleased(MouseEvent e) {}
 
 	}
 
 	class BasicTrialKeyListener implements KeyListener {
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void keyPressed(KeyEvent e) {
 			// If the user presses the Spacebar, start the trial
 			if(e.getKeyCode() == KeyEvent.VK_SPACE && status == Status.UNSTARTED) {
@@ -482,10 +508,10 @@ public class GameScreen extends Screen {
 
 		}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void keyReleased(KeyEvent e) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void keyTyped(KeyEvent e) {}
 	}
 
@@ -501,7 +527,7 @@ public class GameScreen extends Screen {
 			this.trialStart = 0L;
 		}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void run() {
 
 			while(Thread.currentThread() == animUpdater) {

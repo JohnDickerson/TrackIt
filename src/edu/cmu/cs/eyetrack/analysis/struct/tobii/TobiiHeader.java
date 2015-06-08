@@ -9,32 +9,40 @@ public class TobiiHeader {
 	private String sysOS;
 	private String sysUser;
 	private String sysMachine;
-	
+
 	private String recName;
 	private Date recDateTime;
 	private Long recDateTimestamp;
 	private Dimension recResolution;
 	private Rectangle2D.Double screenSizeMM;
-	
+
 	private Date exportDateTime;
-	
+
 	private String participant;	
 
-	
+
 	public TobiiHeader() {
-		
+
 	}
 
 
 	public boolean isCompatible(TobiiHeader header) {
-		
-		if(header == null) {
+
+		if(null==header) {
+			System.err.println("TobiiHeader is null.");
 			return false;
 		}
-		
-		return getParticipant().equals(header.getParticipant()) && getRecDateTime().equals(header.getRecDateTime());
+		//if(!getParticipant().equals(header.getParticipant())) {
+		//	System.err.println("Participants differ: " + getParticipant() + " vs. " + header.getParticipant() + "   , cannot continue.");
+		//	return false;
+		//}   // apparently don't care about this?  experimenters name things incorrectly
+		if(!getRecDateTime().equals(header.getRecDateTime())) {
+			System.err.println("Recording times differ:\n" + getRecDateTime() + "\n" + header.getRecDateTime() + "\nCannot continue.");
+			return false;
+		}
+		return true;
 	}
-	
+
 	public String getSysOS() {
 		return sysOS;
 	}

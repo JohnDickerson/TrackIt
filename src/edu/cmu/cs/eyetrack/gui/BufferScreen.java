@@ -28,15 +28,15 @@ public class BufferScreen extends Screen {
 		addMouseListener(new ClickThroughMouseListener());
 		addKeyListener(new KeyListener() {
 
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 					processAnyEvent();
 				}
 			}
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void keyReleased(KeyEvent e) {}
-			@Override
+			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void keyTyped(KeyEvent e) {}
 		});
 	}
@@ -53,21 +53,21 @@ public class BufferScreen extends Screen {
 	}
 
 	protected class ClickThroughMouseListener implements MouseListener {
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseClicked(MouseEvent arg0) {
 			processAnyEvent();
 		}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseEntered(MouseEvent arg0) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseExited(MouseEvent arg0) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mousePressed(MouseEvent arg0) {}
 
-		@Override
+		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 		public void mouseReleased(MouseEvent arg0) {}
 	}
 

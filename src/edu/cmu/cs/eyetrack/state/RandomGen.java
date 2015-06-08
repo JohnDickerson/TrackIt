@@ -32,6 +32,8 @@ public class RandomGen {
 		add(Color.MAGENTA);
 		add(Color.CYAN);
 		add(Color.GRAY);
+		//add(Color.LIGHT_GRAY);
+		//add(Color.DARK_GRAY);
 	}};
 
 	private Random random;
