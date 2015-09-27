@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 
 import org.jdesktop.core.animation.timing.Animator;
 
-import edu.cmu.cs.eyetrack.gui.shapes.sabine.Sabine2Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.*;
 import edu.cmu.cs.eyetrack.helper.Coordinate;
 
 public abstract class Stimulus {
@@ -97,7 +97,8 @@ public abstract class Stimulus {
 
 	public static void main(String args[]) {
 		//final Stimulus stimulus = new Sabine1Stimulus("Sabine 1", Color.BLACK, 300, 300);
-		final Stimulus stimulus = new Sabine2Stimulus("Sabine 2", Color.BLACK, 300, 300);
+		final Stimulus stimulus = new SabineNew6Stimulus("Sabine 2", Color.BLACK, 300, 300);
+		stimulus.move(175, 175);
 		JFrame frame = new JFrame() {
 			private static final long serialVersionUID = 1L;
 			public void paint(Graphics g) {

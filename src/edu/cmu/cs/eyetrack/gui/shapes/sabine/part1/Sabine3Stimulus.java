@@ -1,4 +1,4 @@
-package edu.cmu.cs.eyetrack.gui.shapes.sabine;
+package edu.cmu.cs.eyetrack.gui.shapes.sabine.part1;
 
 import java.awt.Color;
 import java.awt.Polygon;

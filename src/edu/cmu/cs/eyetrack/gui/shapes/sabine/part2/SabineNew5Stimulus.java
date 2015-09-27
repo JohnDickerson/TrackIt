@@ -1,34 +1,34 @@
-package edu.cmu.cs.eyetrack.gui.shapes.sabine;
+package edu.cmu.cs.eyetrack.gui.shapes.sabine.part2;
 
 import java.awt.Color;
 import java.awt.Polygon;
 
 import edu.cmu.cs.eyetrack.gui.shapes.Stimulus;
 
-public class Sabine2Stimulus extends Stimulus {
-
+public class SabineNew5Stimulus extends Stimulus {
 	private Polygon polygon;
-	private static double squeezeFrac = 0.25;
 	
-	public Sabine2Stimulus(String name, Color color, int width, int height) {
+	public SabineNew5Stimulus(String name, Color color, int width, int height) {
 
 		super(name, color, width, height, color);
 
 		polygon = new Polygon();
 		polygon.addPoint(0,0);
-		polygon.addPoint(0, height);
-		polygon.addPoint(width, (int) (height * (1-squeezeFrac)) );
-		polygon.addPoint(width, (int) (height * squeezeFrac));
-
+		polygon.addPoint(width, 0);
+		polygon.addPoint((int) (0.8*width), (int) (0.3*height));
+		polygon.addPoint(width, (int) (0.5*height));
+		polygon.addPoint((int) (0.7*width), height);
+		polygon.addPoint((int) (0.3*width), (int) (0.85*height));
+		polygon.addPoint((int) (0.2*width), (int) (0.3*height));		
 		shape = polygon;
 	}
 
 	@Override
 	public Stimulus factoryClone(Color color) {
 		if(color==null) {
-			return new Sabine2Stimulus(name, this.color, width, height);
+			return new SabineNew5Stimulus(name, this.color, width, height);
 		} else {
-			return new Sabine2Stimulus(name, color, width, height);
+			return new SabineNew5Stimulus(name, color, width, height);
 		}
 	}
 
