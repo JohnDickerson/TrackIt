@@ -25,6 +25,7 @@ import edu.cmu.cs.eyetrack.gui.shapes.Stimulus.StimulusClass;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory.StimulusType;
 import edu.cmu.cs.eyetrack.gui.shapes.TriangleStimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew10Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew1Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew2Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew3Stimulus;
@@ -33,6 +34,7 @@ import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew5Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew6Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew7Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew8Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew9Stimulus;
 import edu.cmu.cs.eyetrack.helper.Util;
 import edu.cmu.cs.eyetrack.io.TestRecord;
 
@@ -133,6 +135,9 @@ public class GameState {
 			StimulusFactory.getInstance().registerStimulus(new SabineNew6Stimulus("Stimulus 6", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
 			StimulusFactory.getInstance().registerStimulus(new SabineNew7Stimulus("Stimulus 7", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
 			StimulusFactory.getInstance().registerStimulus(new SabineNew8Stimulus("Stimulus 8", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);		
+			StimulusFactory.getInstance().registerStimulus(new SabineNew9Stimulus("Stimulus 9", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);		
+			StimulusFactory.getInstance().registerStimulus(new SabineNew10Stimulus("Stimulus 10", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);		
+			
 			break;
 		default:
 			throw new IllegalArgumentException("Cannot understand StimulusClass type " + stimulusClass);

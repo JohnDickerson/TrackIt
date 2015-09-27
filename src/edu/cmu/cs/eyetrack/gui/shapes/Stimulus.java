@@ -97,7 +97,7 @@ public abstract class Stimulus {
 
 	public static void main(String args[]) {
 		//final Stimulus stimulus = new Sabine1Stimulus("Sabine 1", Color.BLACK, 300, 300);
-		final Stimulus stimulus = new SabineNew8Stimulus("Sabine Test", Color.BLACK, 300, 300);
+		final Stimulus stimulus = new SabineNew10Stimulus("Sabine Test", Color.BLACK, 300, 300);
 		stimulus.move(175, 175);
 		JFrame frame = new JFrame() {
 			private static final long serialVersionUID = 1L;
