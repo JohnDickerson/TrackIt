@@ -12,7 +12,7 @@ public class SabineNew10Stimulus extends Stimulus {
 
 	public SabineNew10Stimulus(String name, Color color, int width, int height) {
 		super(name, color, width, height, color);
-		this.radius = (int) (Math.min(width, height)*0.25);
+		this.radius = (int) (Math.min(width, height)*0.40);
 		makeShape(0,0);
 	}
 
