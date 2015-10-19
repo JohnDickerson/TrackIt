@@ -21,9 +21,11 @@ public class BufferScreen extends Screen {
 		this.decoration = decoration;
 
 		// Decorate the frame sparsely, wait for any user input
+		// Decorate only if not Colorado experiments
 		setLayout(new BorderLayout());
-		add(new JLabel(this.decoration));
-
+		//if(owner.getGameState().getSettings().getExperiment().get   ) {
+			add(new JLabel(this.decoration));
+		//}
 		// User trivially clicks through to the next screen
 		addMouseListener(new ClickThroughMouseListener());
 		addKeyListener(new KeyListener() {
