@@ -25,9 +25,10 @@ import edu.cmu.cs.eyetrack.gui.shapes.Stimulus.StimulusClass;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory;
 import edu.cmu.cs.eyetrack.gui.shapes.StimulusFactory.StimulusType;
 import edu.cmu.cs.eyetrack.gui.shapes.TriangleStimulus;
-import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew10Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.part1.Sabine2Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.part1.Sabine6Stimulus;
+import edu.cmu.cs.eyetrack.gui.shapes.sabine.part1.Sabine8Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew1Stimulus;
-import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew2Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew3Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew4Stimulus;
 import edu.cmu.cs.eyetrack.gui.shapes.sabine.part2.SabineNew5Stimulus;
@@ -126,18 +127,32 @@ public class GameState {
 			//StimulusFactory.getInstance().registerStimulus(new Sabine8Stimulus("Stimulus 8", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);	
 			//StimulusFactory.getInstance().registerStimulus(new Sabine9Stimulus("Stimulus 9", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);	
 			//StimulusFactory.getInstance().registerStimulus(new Sabine10Stimulus("Stimulus 10", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);	
-			// Newer stimuli (Sept 2015)
-			StimulusFactory.getInstance().registerStimulus(new SabineNew1Stimulus("Stimulus 1", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
-			StimulusFactory.getInstance().registerStimulus(new SabineNew2Stimulus("Stimulus 2", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
-			StimulusFactory.getInstance().registerStimulus(new SabineNew3Stimulus("Stimulus 3", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
-			StimulusFactory.getInstance().registerStimulus(new SabineNew4Stimulus("Stimulus 4", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
-			StimulusFactory.getInstance().registerStimulus(new SabineNew5Stimulus("Stimulus 5", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
-			StimulusFactory.getInstance().registerStimulus(new SabineNew6Stimulus("Stimulus 6", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
-			StimulusFactory.getInstance().registerStimulus(new SabineNew7Stimulus("Stimulus 7", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
-			StimulusFactory.getInstance().registerStimulus(new SabineNew8Stimulus("Stimulus 8", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);		
-			StimulusFactory.getInstance().registerStimulus(new SabineNew9Stimulus("Stimulus 9", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);		
-			StimulusFactory.getInstance().registerStimulus(new SabineNew10Stimulus("Stimulus 10", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);		
+			//StimulusFactory.getInstance().registerStimulus(new SabineNew2Stimulus("Stimulus 2", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);
+			//StimulusFactory.getInstance().registerStimulus(new SabineNew10Stimulus("Stimulus 10", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.BOTH);		
 			
+			// Newer stimuli (Sept 2015)
+			/*	1 --> SabineNewStimulus4
+				2 --> SabineNewStimulus8
+				3 --> SabineNewStimulus5
+				4 --> SabineNewStimulus3
+				5 --> SabineNewStimulus1 */
+			StimulusFactory.getInstance().registerStimulus(new SabineNew4Stimulus("Target 1", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.TARGET);
+			StimulusFactory.getInstance().registerStimulus(new SabineNew8Stimulus("Target 2", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.TARGET);		
+			StimulusFactory.getInstance().registerStimulus(new SabineNew5Stimulus("Target 3", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.TARGET);
+			StimulusFactory.getInstance().registerStimulus(new SabineNew3Stimulus("Target 4", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.TARGET);
+			StimulusFactory.getInstance().registerStimulus(new SabineNew1Stimulus("Target 5", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.TARGET);
+			/*	6 --> SabineNewStimulus6
+				7 --> SabineNewStimulus7
+				8 --> SabineStimulus6
+				9 --> SabineStimulus8
+				10 -> SabineNewStimulus9 
+				11 -> SabineStimulus2 */
+			StimulusFactory.getInstance().registerStimulus(new SabineNew6Stimulus("Distractor 6", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.DISTRACTOR);
+			StimulusFactory.getInstance().registerStimulus(new SabineNew7Stimulus("Distractor 7", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.DISTRACTOR);
+			StimulusFactory.getInstance().registerStimulus(new Sabine6Stimulus("Distractor 8", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.DISTRACTOR);	
+			StimulusFactory.getInstance().registerStimulus(new Sabine8Stimulus("Distractor 9", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.DISTRACTOR);	
+			StimulusFactory.getInstance().registerStimulus(new SabineNew9Stimulus("Distractor 10", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.DISTRACTOR);		
+			StimulusFactory.getInstance().registerStimulus(new Sabine2Stimulus("Distractor 11", stimColors.get(colorIdx++),  (int) (blockWidth * stimScale), (int) (blockHeight * stimScale)), StimulusType.DISTRACTOR);
 			break;
 		default:
 			throw new IllegalArgumentException("Cannot understand StimulusClass type " + stimulusClass);

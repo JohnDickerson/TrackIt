@@ -122,6 +122,7 @@ public class Settings implements CSVWritable {
 		private boolean usesRandomTarget;
 		private boolean usesRandomWithReplacement;
 		private Stimulus canonicalTarget;
+		private ColoradoTypedTrial coloradoTypedTrial;
 		private double fps;
 		private long seed;
 		private int gridXSize;
@@ -138,7 +139,7 @@ public class Settings implements CSVWritable {
 		private MotionInterpolationType motionInterpolationType;
 		private StimulusClass stimulusClass;
 		
-		public Experiment(int numDistractors, double objectSpeed, TrialType trialType, int trialCount, double trialLength, boolean usesRandomTarget, boolean usesRandomWithReplacement, StimulusClass stimulusClass, Stimulus canonicalTarget, double fps, long seed, int gridXSize, int gridYSize, int pixelWidth, int pixelHeight, int insetX, int insetY, boolean usesBGImages, String bgImageDirectory, MemoryCheckType memCheckType, boolean usesFullscreen, MotionConstraintType motionConstraintType, MotionInterpolationType motionInterpolationType) {
+		public Experiment(int numDistractors, double objectSpeed, TrialType trialType, int trialCount, double trialLength, boolean usesRandomTarget, boolean usesRandomWithReplacement, StimulusClass stimulusClass, Stimulus canonicalTarget, ColoradoTypedTrial coloradoTypedTrial, double fps, long seed, int gridXSize, int gridYSize, int pixelWidth, int pixelHeight, int insetX, int insetY, boolean usesBGImages, String bgImageDirectory, MemoryCheckType memCheckType, boolean usesFullscreen, MotionConstraintType motionConstraintType, MotionInterpolationType motionInterpolationType) {
 			this.numDistractors = numDistractors;
 			this.objectSpeed = objectSpeed;
 			this.trialType = trialType;
@@ -148,6 +149,7 @@ public class Settings implements CSVWritable {
 			this.usesRandomWithReplacement = usesRandomWithReplacement;
 			this.stimulusClass = stimulusClass;
 			this.canonicalTarget = canonicalTarget;
+			this.coloradoTypedTrial = coloradoTypedTrial;
 			this.fps = fps;
 			this.seed = seed;
 			this.gridXSize = gridXSize;
@@ -261,6 +263,14 @@ public class Settings implements CSVWritable {
 
 		public boolean getUsesRandomWithReplacement() {
 			return usesRandomWithReplacement;
+		}
+		
+		public boolean getUsesColoradoTypedTrial() { 
+			return this.coloradoTypedTrial != null;
+		}
+
+		public ColoradoTypedTrial getColoradoTypedTrial() {
+			return coloradoTypedTrial;
 		}
 		
 	}

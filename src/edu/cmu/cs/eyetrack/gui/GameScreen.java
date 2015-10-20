@@ -84,7 +84,7 @@ public class GameScreen extends Screen {
 	// The exact timestamp when the distractors and targets disappear.  This can't
 	// be just (trial state time + trial length) due to FPS
 	private long disappearanceTime;
-	
+
 	// Records all relevant information for this Trial screen
 	private Trial trial;
 
@@ -120,21 +120,21 @@ public class GameScreen extends Screen {
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static boolean enableOSXFullscreen(Window window) {
-	    if(null == window) { return false; }
+		if(null == window) { return false; }
 		try {
-	        Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
-	        Class params[] = new Class[]{Window.class, Boolean.TYPE};
-	        Method method = util.getMethod("setWindowCanFullScreen", params);
-	        method.invoke(util, window, true);
-	        return true;
-	    } catch (ClassNotFoundException e1) {
-	      	Util.dPrintln("OS X 10.7+ fullscreen API not supported or failed.");
-	    } catch (Exception e) {
-	    	Util.dPrintln("OS X 10.7+ fullscreen API not supported or failed.");
-	    }
+			Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
+			Class params[] = new Class[]{Window.class, Boolean.TYPE};
+			Method method = util.getMethod("setWindowCanFullScreen", params);
+			method.invoke(util, window, true);
+			return true;
+		} catch (ClassNotFoundException e1) {
+			Util.dPrintln("OS X 10.7+ fullscreen API not supported or failed.");
+		} catch (Exception e) {
+			Util.dPrintln("OS X 10.7+ fullscreen API not supported or failed.");
+		}
 		return false;
 	}
-	
+
 	@Override
 	protected void initialize() {
 
@@ -230,11 +230,11 @@ public class GameScreen extends Screen {
 			setFocusable(true);
 			requestFocusInWindow();
 			addKeyListener(new BasicTrialKeyListener());
-			
+
 			// Register real stimuli
-			
+
 			owner.getGameState().registerStimuli(blockWidth, blockHeight, settings.getExperiment().getStimulusClass());
-			
+
 			// Compute the ending location for the target (across all trials)
 			stimTargetEndingPos = owner.getGameState().getRandomGen().getRandomEndPositions(
 					owner.getGameState().getSettings().getExperiment().getTrialCount() );
@@ -264,47 +264,55 @@ public class GameScreen extends Screen {
 		List<Color> stimColors = owner.getGameState().getRandomGen().getRandomColors();
 		int colorIdx=0;
 		//trial.setStimColors(stimColors);
-		
+
 		Set<Stimulus> previousStimTargets = owner.getGameState().getPreviousStimTargets();
-		
+
 		// Create the target, place it first---we have the requirement
 		// that the ENDING grid position of the target must be uniformly
 		// distributed across all grid positions, as well as the BEGINNING position
-		if(owner.getGameState().getSettings().getExperiment().getUsesRandomTarget()) {
-			// If we're sampling without replacement, make sure we sample a new target; otherwise,
-			// just sample any target from StimulusType.TARGET
-			if(!owner.getGameState().getSettings().getExperiment().getUsesRandomWithReplacement()) {
-				boolean legalStimTarget = true;
-				do {
-					stimTarget = StimulusFactory.getInstance().create(StimulusType.TARGET, stimColors.get(colorIdx));
-					legalStimTarget = true;
-					// Make sure we haven't sampled this target before
-					for(Stimulus previousStimTarget : previousStimTargets) {
-						if(previousStimTarget.isEquivalent(stimTarget)) { 
-							legalStimTarget = false;
-							break;
-						}
-					}
-				} while(!legalStimTarget);
-				colorIdx++;
-			} else {
-				stimTarget = StimulusFactory.getInstance().create(StimulusType.TARGET, stimColors.get(colorIdx++));
-			}
-		} else {
-			stimTarget = owner.getGameState().getSettings().getExperiment().getCanonicalTarget().factoryClone();
+		Experiment exp = owner.getGameState().getSettings().getExperiment();
+		if(exp.getUsesColoradoTypedTrial()) {
+			// get the stimuls corresponding to this trial ID from the fixed UC list
+			stimTarget = StimulusFactory.getInstance().getRegisteredExample(StimulusType.TARGET, exp.getColoradoTypedTrial().getStimulus(trialCount) );
 			
-			// Adjust colors so that the target's color is first in line, skipped by distractors below.
-			for(int idx=0; idx<stimColors.size(); idx++) {
-				if(stimColors.get(idx).equals(stimTarget.getColor())) {
-					stimColors.set(idx, stimColors.get(0));
-					stimColors.set(0, stimTarget.getColor());
+		} else {
+			// Standard non-UColorado trials -- do random selection, etc
+			if(exp.getUsesRandomTarget()) {
+				// If we're sampling without replacement, make sure we sample a new target; otherwise,
+				// just sample any target from StimulusType.TARGET
+				if(!exp.getUsesRandomWithReplacement()) {
+					boolean legalStimTarget = true;
+					do {
+						stimTarget = StimulusFactory.getInstance().create(StimulusType.TARGET, stimColors.get(colorIdx));
+						legalStimTarget = true;
+						// Make sure we haven't sampled this target before
+						for(Stimulus previousStimTarget : previousStimTargets) {
+							if(previousStimTarget.isEquivalent(stimTarget)) { 
+								legalStimTarget = false;
+								break;
+							}
+						}
+					} while(!legalStimTarget);
 					colorIdx++;
-					break;
+				} else {
+					stimTarget = StimulusFactory.getInstance().create(StimulusType.TARGET, stimColors.get(colorIdx++));
+				}
+			} else {
+				stimTarget = exp.getCanonicalTarget().factoryClone();
+
+				// Adjust colors so that the target's color is first in line, skipped by distractors below.
+				for(int idx=0; idx<stimColors.size(); idx++) {
+					if(stimColors.get(idx).equals(stimTarget.getColor())) {
+						stimColors.set(idx, stimColors.get(0));
+						stimColors.set(0, stimTarget.getColor());
+						colorIdx++;
+						break;
+					}
 				}
 			}
 		}
 		previousStimTargets.add(stimTarget);
-		
+
 		// Create #distractors Distractors, according to user's preferences
 		TrialType trialType = owner.getGameState().getSettings().getExperiment().getTrialType();
 		if(trialType.equals(TrialType.ALL_SAME) || trialType.equals(TrialType.SAME_AS_TARGET)) {
@@ -351,7 +359,7 @@ public class GameScreen extends Screen {
 		RandomGen rGen = owner.getGameState().getRandomGen();
 		List<Coordinate<Integer>> initialPlacements = rGen.genRandomGridPositions(stimEverything.size());
 		trialLength = ((long) owner.getGameState().getSettings().getExperiment().getTrialLength());
-		
+
 		// Place the stimulus in random boxes
 		// Also initialize their first movement instructions
 		int idx=0;
@@ -370,7 +378,7 @@ public class GameScreen extends Screen {
 
 
 	private void placeAndPlanStimulus(final Stimulus stim, Coordinate<Integer> startingGrid) { 
-		
+
 		// Place stimulus in its original location
 		Coordinate<Integer> gridCenter = getGridCenter(startingGrid);
 		moveStimulus(stim, gridCenter);
@@ -378,7 +386,7 @@ public class GameScreen extends Screen {
 
 		// Length of the trial is the minimum length specified by the user
 		// plus some random small number of milliseconds---this is defined by the target's movement
-		
+
 		List<KeyFrames<Integer>> keyFramesList = new ArrayList<KeyFrames<Integer>>();
 		double timeUsed = owner.getGameState().getRandomGen().calcKeyFrames(keyFramesList, 
 				MIN_JUMP_LENGTH, 
@@ -396,7 +404,7 @@ public class GameScreen extends Screen {
 			// If the target used more time than allocated, update this
 			trialLength = (long) timeUsed;
 			trial.setLength(trialLength);
-			
+
 		}
 
 		final KeyFrames<Integer> keyFramesX = keyFramesList.get(0);
@@ -419,7 +427,7 @@ public class GameScreen extends Screen {
 		.build() );
 
 	}
-	
+
 	// Remove the stimuli, maybe call 
 	@Override
 	protected void tearDown() {
@@ -479,7 +487,7 @@ public class GameScreen extends Screen {
 		// Figure out if the user selected the *right* grid box
 		boolean clickCorrect = trial.getUserClickGridPos().equals(trial.getTargetFinalGridPos());
 		trial.setGridClickCorrect(clickCorrect);
-		
+
 		// How long did it take the user to click on a box, once the distractors and target disappeared?
 		long responseTime = System.currentTimeMillis() - disappearanceTime;
 		trial.setGridClickRT(responseTime);
@@ -489,7 +497,7 @@ public class GameScreen extends Screen {
 		status = Status.DONE;
 		owner.switchContext(PanelID.BUFFER1);
 	}
-	
+
 	class GridBoxMouseListener implements MouseListener {
 
 		//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5 
@@ -572,14 +580,14 @@ public class GameScreen extends Screen {
 
 				//System.out.println("Target center: " + stimTarget.getCenter());
 				//System.out.println("Grid center: " + getGridCenter( xToGrid(stimTarget.getCenter().getX()), yToGrid(stimTarget.getCenter().getY())));
-				
+
 
 				// If we've run for at least the length of the trial, 
 				// quit out to the part where the user clicks on the grid
 				if( trialLength < (frameStartTime - trialStart) ) {
 					//this.cancel();
-					
-					
+
+
 					// Record where the target stopped
 					trial.setTargetFinalPos(stimTarget.getCenter());
 					trial.setTargetFinalGridPos(new Coordinate<Integer>(
@@ -591,7 +599,7 @@ public class GameScreen extends Screen {
 					repaint();	
 					return;
 				}
-				
+
 				mainPanel.repaint();
 
 				// Tick again in "exactly" 40fps

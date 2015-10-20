@@ -62,6 +62,7 @@ import edu.cmu.cs.eyetrack.helper.Util;
 import edu.cmu.cs.eyetrack.helper.Util.PanelID;
 import edu.cmu.cs.eyetrack.io.ResourceLoader;
 import edu.cmu.cs.eyetrack.io.TestRecord;
+import edu.cmu.cs.eyetrack.state.ColoradoTypedTrial;
 import edu.cmu.cs.eyetrack.state.GameState;
 import edu.cmu.cs.eyetrack.state.RandomGen;
 import edu.cmu.cs.eyetrack.state.Settings;
@@ -161,6 +162,7 @@ public class StartMenuScreen extends Screen {
 		final Map<Stimulus.StimulusClass, ComboBoxModel> nameModels = new HashMap<Stimulus.StimulusClass, ComboBoxModel>();
 		final Map<Stimulus.StimulusClass, ComboBoxModel> colorModels = new HashMap<Stimulus.StimulusClass, ComboBoxModel>();
 
+
 		GameState gameState = owner.getGameState();
 		for(Stimulus.StimulusClass stimulusClass : Arrays.asList( Stimulus.StimulusClass.values() )) {
 			// Load this subset of shapes and colors
@@ -182,6 +184,9 @@ public class StartMenuScreen extends Screen {
 				colorModels.put(stimulusClass, new DefaultComboBoxModel(targetColors));
 			}
 		}
+
+		// UColorado now wants "Type 1" and "Type 2" trials
+		final ComboBoxModel uColoradoTypedTrialModel = new DefaultComboBoxModel(ColoradoTypedTrial.TRIAL_TYPE.values());
 
 		final JLabel lblTargetType = new JLabel("Type:", JLabel.TRAILING);
 		cbxTargetType = new JComboBox( nameModels.get(Stimulus.StimulusClass.CMU) );
@@ -211,7 +216,7 @@ public class StartMenuScreen extends Screen {
 			}
 		});
 		lblRandomTarget.setLabelFor(chkRandomTarget);
-		
+
 		// If we're doing random target, sample with or without replacement?
 		chkRandomWithReplacement = new JCheckBox("Replace?");
 		chkRandomWithReplacement.setSelected( true );
@@ -249,7 +254,8 @@ public class StartMenuScreen extends Screen {
 		rdoShapeTypeUColorado.addItemListener(new ItemListener() {
 			//@Override  //TODO Java 1.5 screams about this; remove when not caring about Java 1.5
 			public void itemStateChanged(ItemEvent e) {
-				cbxTargetType.setModel( nameModels.get(Stimulus.StimulusClass.UCOLORADO) );
+				//cbxTargetType.setModel( nameModels.get(Stimulus.StimulusClass.UCOLORADO) );
+				cbxTargetType.setModel(uColoradoTypedTrialModel);
 				cbxTargetColor.setModel( colorModels.get(Stimulus.StimulusClass.UCOLORADO) );
 				if(chkRandomTarget.isSelected()) {
 					cbxTargetType.setSelectedIndex((new Random()).nextInt(cbxTargetType.getItemCount()));
@@ -561,16 +567,16 @@ public class StartMenuScreen extends Screen {
 			model.setValue(newMax);
 		}
 	}
-	
+
 	private void sanitizeNumTrials() {
-		
+
 		// Maximum number of trials is infinite if we're sampling random targets with replacement,
 		// but it's only |# Stimulus| if we're sampling with replacement		
 		Integer newMax = (chkRandomTarget.isSelected() && !chkRandomWithReplacement.isSelected()) ? cbxTargetType.getItemCount() : null;
-				
+
 		SpinnerNumberModel model = (SpinnerNumberModel) spnTrialCount.getModel();
 		model.setMaximum(newMax);
-		
+
 		if( null != newMax && Integer.valueOf(spnTrialCount.getValue().toString()) > newMax ) {
 			model.setValue(newMax);
 		}
@@ -672,7 +678,6 @@ public class StartMenuScreen extends Screen {
 			StimulusFactory.getInstance().reset();
 			owner.getGameState().registerStimuli(stimulusClass);
 
-
 			Dimension trialDim = owner.getSize();
 			double insetX = 0;
 			double insetY = 0;
@@ -692,7 +697,6 @@ public class StartMenuScreen extends Screen {
 			double trialLength = Double.valueOf(spnMinTrialLength.getValue().toString());
 			boolean usesRandomTarget = chkRandomTarget.isSelected();
 			boolean usesSamplingWithReplacement = chkRandomWithReplacement.isSelected();
-			Stimulus specificTargetType = StimulusFactory.getInstance().getAllOfType(StimulusType.TARGET).get( cbxTargetType.getSelectedItem().toString() );
 			Color specificTargetColor = (Color) cbxTargetColor.getSelectedItem();
 			double fps = Double.valueOf(spnFramesPerSecond.getValue().toString());
 			//long seed = Long.valueOf(spnSeed.getValue().toString());
@@ -717,7 +721,19 @@ public class StartMenuScreen extends Screen {
 			}
 
 			// If the user selected a canonical, specific target, make it
-			Stimulus canonicalTarget = specificTargetType.factoryClone(specificTargetColor);
+			// UColorado has a specific list per type I or II; deal with that now 
+			Stimulus canonicalTarget = null;
+			ColoradoTypedTrial coloradoTypedTrial = null;
+			if(stimulusClass == Stimulus.StimulusClass.UCOLORADO) {
+				ColoradoTypedTrial.TRIAL_TYPE ucTrialType = ColoradoTypedTrial.TRIAL_TYPE.valueOf(cbxTargetType.getSelectedItem().toString());
+				coloradoTypedTrial = new ColoradoTypedTrial(ucTrialType);
+				usesSamplingWithReplacement = true;
+				trialCount = coloradoTypedTrial.getNumTrials();
+				trialType = TrialType.getTrialType("All Different");
+			} else {
+				Stimulus specificTargetType = StimulusFactory.getInstance().getAllOfType(StimulusType.TARGET).get( cbxTargetType.getSelectedItem().toString() );
+				canonicalTarget = specificTargetType.factoryClone(specificTargetColor);
+			}
 
 			// If we are using background images, load them now (before the trial starts)
 			ArrayList<ImageIcon> backgroundImages = null;
@@ -790,7 +806,7 @@ public class StartMenuScreen extends Screen {
 			// parameters and experimental setup
 			Settings settings = new Settings();
 			settings.setUser(settings.new User(name, gender, birthdate, testDate, testLocation));	
-			settings.setExperiment(settings.new Experiment(numDistractors, objectSpeed, trialType, trialCount, trialLength, usesRandomTarget, usesSamplingWithReplacement, stimulusClass, canonicalTarget, fps, seed, gridX, gridY, pixelWidth, pixelHeight, (int) insetX, (int) insetY, usesBackgroundImages, backgroundImageDirectory, memCheckType, usesFullscreen, motionConstraintType, motionInterpolationType));
+			settings.setExperiment(settings.new Experiment(numDistractors, objectSpeed, trialType, trialCount, trialLength, usesRandomTarget, usesSamplingWithReplacement, stimulusClass, canonicalTarget, coloradoTypedTrial, fps, seed, gridX, gridY, pixelWidth, pixelHeight, (int) insetX, (int) insetY, usesBackgroundImages, backgroundImageDirectory, memCheckType, usesFullscreen, motionConstraintType, motionInterpolationType));
 
 			// Alert the greater game state to our initialization parameters
 			GameState gameState = owner.getGameState();

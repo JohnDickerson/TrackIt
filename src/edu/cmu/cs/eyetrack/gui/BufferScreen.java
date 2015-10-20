@@ -9,6 +9,7 @@ import java.awt.event.MouseListener;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
+import edu.cmu.cs.eyetrack.helper.Util;
 import edu.cmu.cs.eyetrack.helper.Util.PanelID;
 
 @SuppressWarnings("serial")
@@ -21,11 +22,11 @@ public class BufferScreen extends Screen {
 		this.decoration = decoration;
 
 		// Decorate the frame sparsely, wait for any user input
-		// Decorate only if not Colorado experiments
+		// Decorate only for CMU experiments
 		setLayout(new BorderLayout());
-		//if(owner.getGameState().getSettings().getExperiment().get   ) {
+		if(Util.CMU_ONLY) {
 			add(new JLabel(this.decoration));
-		//}
+		}
 		// User trivially clicks through to the next screen
 		addMouseListener(new ClickThroughMouseListener());
 		addKeyListener(new KeyListener() {
