@@ -21,6 +21,10 @@ public abstract class Util {
 	// CMU-only experiments (temporary activation, not ready for production
 	public static boolean CMU_ONLY = true;
 	
+	// Make a smiley face image show up during the buffer screen, or just keep a blank gray screen
+	public static boolean SMILEY_FACE_BUFFER = false;
+	
+	
 	// Adapted from Sun's JFileChooser demo
 	public static String getExtension(File f) {
 		String s = f.getName(), ext = null;

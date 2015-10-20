@@ -24,7 +24,7 @@ public class BufferScreen extends Screen {
 		// Decorate the frame sparsely, wait for any user input
 		// Decorate only for CMU experiments
 		setLayout(new BorderLayout());
-		if(Util.CMU_ONLY) {
+		if(Util.SMILEY_FACE_BUFFER) {
 			add(new JLabel(this.decoration));
 		}
 		// User trivially clicks through to the next screen
