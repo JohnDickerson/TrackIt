@@ -54,6 +54,7 @@ public class ColoradoTypedTrial {
 		switch(ttype) {
 		case TYPE1:
 			orderedTargetList = new ArrayList<Stimulus>() {{
+				add(targetStimMap.get("Target 2"));   // warm-up trial
 				add(targetStimMap.get("Target 1"));
 				add(targetStimMap.get("Target 2"));
 				add(targetStimMap.get("Target 4"));
@@ -74,9 +75,10 @@ public class ColoradoTypedTrial {
 		case TYPE2:
 			orderedTargetList = new ArrayList<Stimulus>() {{
 				add(targetStimMap.get("Target 2"));
+				add(targetStimMap.get("Target 5"));
 				add(targetStimMap.get("Target 4"));
 				add(targetStimMap.get("Target 1"));
-				add(targetStimMap.get("Target 5"));
+				add(targetStimMap.get("Target 2"));
 				add(targetStimMap.get("Target 3"));
 				add(targetStimMap.get("Target 1"));
 				add(targetStimMap.get("Target 5"));
