@@ -64,11 +64,11 @@ public class ColoradoTypedTrial {
 				add(targetStimMap.get("Target 3"));
 				add(targetStimMap.get("Target 5"));
 				add(targetStimMap.get("Target 1"));
-				add(targetStimMap.get("Target 3"));
-				add(targetStimMap.get("Target 5"));
-				add(targetStimMap.get("Target 1"));
-				add(targetStimMap.get("Target 4"));
-				add(targetStimMap.get("Target 2"));
+				//add(targetStimMap.get("Target 3"));
+				//add(targetStimMap.get("Target 5"));
+				//add(targetStimMap.get("Target 1"));
+				//add(targetStimMap.get("Target 4"));
+				//add(targetStimMap.get("Target 2"));
 			}};
 			break;
 		case TYPE2:
@@ -83,11 +83,11 @@ public class ColoradoTypedTrial {
 				add(targetStimMap.get("Target 3"));
 				add(targetStimMap.get("Target 4"));
 				add(targetStimMap.get("Target 2"));
-				add(targetStimMap.get("Target 5"));
-				add(targetStimMap.get("Target 3"));
-				add(targetStimMap.get("Target 4"));
-				add(targetStimMap.get("Target 2"));
-				add(targetStimMap.get("Target 1"));
+				//add(targetStimMap.get("Target 5"));
+				//add(targetStimMap.get("Target 3"));
+				//add(targetStimMap.get("Target 4"));
+				//add(targetStimMap.get("Target 2"));
+				//add(targetStimMap.get("Target 1"));
 			}};
 			break;
 		}
