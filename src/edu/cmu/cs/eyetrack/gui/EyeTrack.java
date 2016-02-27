@@ -136,7 +136,7 @@ public class EyeTrack extends JFrame {
 		Runnable createAndShow = new Runnable() {
 			public void run() { 
 				
-				int width = 700, height = 700;
+				int width = 700, height = 600;
 				if(args.length == 2) {
 					width = Integer.valueOf(args[0]);
 					height = Integer.valueOf(args[1]);

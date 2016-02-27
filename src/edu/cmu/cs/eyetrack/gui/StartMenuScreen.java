@@ -93,7 +93,7 @@ public class StartMenuScreen extends Screen {
 	@Override
 	protected void initialize() {
 
-		ImageIcon iiLogoCMU = ResourceLoader.getInstance().getImageIcon("images/cmu_thumb_150.png");
+		ImageIcon iiLogoCMU = ResourceLoader.getInstance().getImageIcon("images/cmu_thumb_75.png");
 		JLabel lblCMU = new JLabel(iiLogoCMU);
 
 		//
