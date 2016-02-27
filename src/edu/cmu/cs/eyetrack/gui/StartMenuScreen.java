@@ -552,7 +552,7 @@ public class StartMenuScreen extends Screen {
 		this.setLayout(new BorderLayout());
 		this.add(inputDataPanel, BorderLayout.CENTER);
 		this.add(buttonPanel, BorderLayout.SOUTH);
-		this.add(lblCMU, BorderLayout.NORTH);
+		//this.add(lblCMU, BorderLayout.NORTH);
 	}
 
 	private void sanitizeNumDistractors() {
